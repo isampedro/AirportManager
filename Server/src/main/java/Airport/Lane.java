@@ -5,15 +5,15 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class Lane {
-    String name;
-    boolean open;
-    Categories category;
-    Queue<Integer> flights;
+    private String name;
+    private LaneState state;
+    private Categories category;
+    private Queue<Flight> flights;
 
     public Lane(String name, Categories category) {
         this.flights = new LinkedList<>();
         this.name = name;
-        this.open = true;
+        this.state = LaneState.OPEN;
         this.category = category;
     }
 
@@ -21,12 +21,28 @@ public class Lane {
         return name;
     }
 
-    public boolean isOpen() {
-        return open;
+    public LaneState getState() {
+        return state;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
+    public void setState(LaneState state) {
+        this.state = state;
+    }
+
+    public void addNewFlight( int flightId, Categories category, String airline ) {
+        flights.offer(new Flight(flightId, category, airline));
+    }
+
+    public boolean flightsAreAwaiting() {
+        return !flights.isEmpty();
+    }
+
+    public Flight departFlight() {
+        if( flightsAreAwaiting() ) {
+            return flights.poll();
+        }
+
+        return null;
     }
 
     @Override
