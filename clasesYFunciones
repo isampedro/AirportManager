@@ -1,0 +1,35 @@
+EnumCategorias
+    A
+    B
+    C
+    D
+    E
+    F
+
+PistaAeropuerto
+    estado
+
+AdministradorAeropuerto ( servidor )
+    Agregar una pista (string nombre, Cat cat) -> default: abierto
+    Consultar el estado de una pista( String nombre )
+    Abrir y cerrar una pista( String nombre )
+    Emitir una orden de despegue en las pistas()
+    Emitir una orden de reordenamiento en las pistas()
+
+ConsultaAeropuerto
+    consultarDespeguesAeropuerto
+
+SolicitantePistas (cliente operador)
+    ultimoCodigoID
+
+    Emitir una solicitud de pista de un vuelo( cod id, cod aeropuerto, String nombreAerolinea, Cat catMin)
+
+Aerolinea
+    miembros
+
+SeguimientoVuelo
+    RegistrarAerolinea( cod id ) -> suscribe la aerolinea a los eventos de cod id
+
+
+
+
