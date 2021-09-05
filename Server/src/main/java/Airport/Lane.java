@@ -29,8 +29,8 @@ public class Lane {
         this.state = state;
     }
 
-    public void addNewFlight( int flightId, Categories category, String airline ) {
-        flights.offer(new Flight(flightId, category, airline));
+    public void addNewFlight( Flight flight ) {
+        flights.offer(flight);
     }
 
     public boolean flightsAreAwaiting() {
@@ -43,6 +43,14 @@ public class Lane {
         }
 
         return null;
+    }
+
+    public int getFlightsQuantity(){
+        return flights.size();
+    }
+
+    public Categories getCategory() {
+        return category;
     }
 
     @Override
