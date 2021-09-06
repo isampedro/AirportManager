@@ -101,4 +101,12 @@ public class Admin {
             minLane.addNewFlight(flight);
     }
 
+    public static void printAirports() {
+        System.out.println("Airport lanes: ");
+        laneList.forEach(System.out::println);
+    }
+
+    public static int getLanesQuantity() {
+        return laneList.size();
+    }
 }

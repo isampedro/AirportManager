@@ -5,10 +5,10 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class Lane {
-    private String name;
+    private final String name;
     private LaneState state;
-    private Categories category;
-    private Queue<Flight> flights;
+    private final Categories category;
+    private final Queue<Flight> flights;
 
     public Lane(String name, Categories category) {
         this.flights = new LinkedList<>();
@@ -64,5 +64,13 @@ public class Lane {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Lane name: '" + name +
+                ", lane state: " + state +
+                ", lane category: " + category +
+                ", flights: " + flights;
     }
 }

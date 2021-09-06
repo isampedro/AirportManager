@@ -3,12 +3,12 @@ package Airport;
 public class Flight {
     int id;
     Categories category;
-    String Airline;
+    String airline;
 
     public Flight(int id, Categories category, String airline) {
         this.id = id;
         this.category = category;
-        Airline = airline;
+        this.airline = airline;
     }
 
     public int getId() {
@@ -20,6 +20,13 @@ public class Flight {
     }
 
     public String getAirline() {
-        return Airline;
+        return airline;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight " + id +
+                ", of category " + category +
+                ", from the Airline " + airline;
     }
 }

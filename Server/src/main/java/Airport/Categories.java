@@ -16,4 +16,26 @@ public enum Categories {
     public boolean isHigherOrEqual(Categories other){
         return this.authorization >= other.authorization;
     }
+
+    @Override
+    public String toString() {
+        String authorizationString;
+        switch (authorization) {
+            case 1: authorizationString = "A";
+                    break;
+            case 2: authorizationString = "B";
+                break;
+            case 3: authorizationString = "C";
+                break;
+            case 4: authorizationString = "D";
+                break;
+            case 5: authorizationString = "E";
+                break;
+            case 6: authorizationString = "F";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + authorization);
+        }
+        return authorizationString;
+    }
 }
