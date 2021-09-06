@@ -49,6 +49,7 @@ public class Admin {
     public static void openLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             setLaneState( laneName, LaneState.OPEN );
+            return;
         }
 
         throw new LaneNotExistentException();
@@ -57,6 +58,7 @@ public class Admin {
     public static void closeLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             setLaneState( laneName, LaneState.CLOSED );
+            return;
         }
 
         throw new LaneNotExistentException();
