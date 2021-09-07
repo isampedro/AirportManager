@@ -1,4 +1,4 @@
-package FligthCrue;
+package FligthCrew;
 
 import Airport.*;
 import AirportExceptions.*;
