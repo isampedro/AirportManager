@@ -1,16 +1,22 @@
 package ar.edu.ar.pod.rmi.server;
 
-import ar.edu.ar.pod.rmi.Categories;
-import ar.edu.ar.pod.rmi.Flight;
-import ar.edu.ar.pod.rmi.Lane;
-import ar.edu.ar.pod.rmi.LaneState;
+import ar.edu.ar.pod.rmi.*;
 import ar.edu.ar.pod.rmi.AirportExceptions.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class Servant {
+public class Servant implements AirportOpsService, LaneRequesterService {
     private final List<Lane> laneList = new LinkedList<>();
+
+    public void flightLane(int flightId,
+                                  int destinyAirport,
+                                  String airline,
+                                  Categories minimumCategory) throws NoAvailableLaneException{
+
+        Flight flight = new Flight(flightId, minimumCategory, airline);
+        addFlightToLane(flight);
+    }
 
     public void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
@@ -84,7 +90,7 @@ public class Servant {
 
     }
 
-    public static void addFlightToLane(Flight flight) throws NoAvailableLaneException{
+    public void addFlightToLane(Flight flight) throws NoAvailableLaneException{
         Lane minLane = null;
         for (Lane lane : laneList) {
             if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
