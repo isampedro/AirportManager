@@ -5,5 +5,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface LaneRequesterService extends Remote {
-    void flightLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException, RemoteException;
+    void addFlightToLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException, RemoteException;
 }

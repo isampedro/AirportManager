@@ -22,6 +22,7 @@ public class AirportOpsTest {
         servantTest.addLane("Airport5", Categories.D);
         servantTest.addLane("Airport6", Categories.E);
         assertEquals(6, servantTest.getLanesQuantity());
+        servantTest.printAirports();
     }
 
     @Test

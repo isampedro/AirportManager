@@ -18,6 +18,4 @@ public interface AirportOpsService extends Remote {
 
     void emitReorder() throws RemoteException;
 
-    void addFlightToLane(Flight flight) throws NoAvailableLaneException, RemoteException;
-
     }

@@ -15,7 +15,7 @@ public class FlightCrewTest {
     @Test( expected = NoAvailableLaneException.class )
     @BeforeAll
     public void throwNoAvailableLaneException() throws NoAvailableLaneException {
-        servant.flightLane( 1, 2, "Honduras' Airline", Categories.B );
+        servant.addFlightToLane( 1, 2, "Honduras' Airline", Categories.B );
     }
 
     @Test
@@ -27,6 +27,6 @@ public class FlightCrewTest {
         servant.addLane("Airport4", Categories.B);
         servant.addLane("Airport5", Categories.D);
         servant.addLane("Airport6", Categories.E);
-        servant.flightLane( 1, 2, "Honduras' Airline", Categories.B );
+        servant.addFlightToLane( 1, 2, "Honduras' Airline", Categories.B );
     }
 }

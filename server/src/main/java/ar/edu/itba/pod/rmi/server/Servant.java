@@ -3,6 +3,7 @@ package ar.edu.itba.pod.rmi.server;
 import ar.edu.itba.pod.rmi.*;
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
 
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,13 +14,23 @@ public class Servant implements AirportOpsService, LaneRequesterService {
         this.laneList = new LinkedList<>();
     }
 
-    public void flightLane(int flightId,
-                           int destinyAirport,
-                           String airline,
-                           Categories minimumCategory) throws NoAvailableLaneException{
-
+    @Override
+    public void addFlightToLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException {
         Flight flight = new Flight(flightId, minimumCategory, airline);
-        addFlightToLane(flight);
+        Lane minLane = null;
+        for (Lane lane : laneList) {
+            if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
+                    lane.getState().equals(LaneState.OPEN)){
+                if(minLane == null)
+                    minLane = lane;
+                else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
+                    minLane = lane;
+            }
+        }
+        if (minLane == null)
+            throw new NoAvailableLaneException();
+        else
+            minLane.addNewFlight(flight);
     }
 
     public void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
@@ -92,23 +103,6 @@ public class Servant implements AirportOpsService, LaneRequesterService {
         // TODO: terminar de reordenar los vuelos
 
 
-    }
-
-    public void addFlightToLane(Flight flight) throws NoAvailableLaneException{
-        Lane minLane = null;
-        for (Lane lane : laneList) {
-            if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
-                    lane.getState().equals(LaneState.OPEN)){
-                if(minLane == null)
-                    minLane = lane;
-                else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
-                    minLane = lane;
-            }
-        }
-        if (minLane == null)
-            throw new NoAvailableLaneException();
-        else
-            minLane.addNewFlight(flight);
     }
 
     public void printAirports() {
