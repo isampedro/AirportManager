@@ -68,7 +68,7 @@ public class Lane {
 
     @Override
     public String toString() {
-        return "Lane name: '" + name +
+        return "Lane name: " + name +
                 ", lane state: " + state +
                 ", lane category: " + category +
                 ", flights: " + flights;

@@ -17,6 +17,14 @@ public enum Categories {
         return this.authorization >= other.authorization;
     }
 
+    public Integer getAuthorization() {
+        return authorization;
+    }
+
+    public static int maxAuthorization() {
+        return F.authorization;
+    }
+
     @Override
     public String toString() {
         String authorizationString;
