@@ -1,14 +1,21 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.server;
+
+import ar.edu.itba.pod.rmi.Categories;
 
 public class Flight {
     int id;
     Categories category;
     String airline;
-
-    public Flight(int id, Categories category, String airline) {
+    int destinyAirport;
+    public Flight(int id, Categories category, String airline, int destinyAirport) {
         this.id = id;
         this.category = category;
         this.airline = airline;
+        this.destinyAirport = destinyAirport;
+    }
+
+    public int getDestinyAirport() {
+        return destinyAirport;
     }
 
     public int getId() {

@@ -1,4 +1,6 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.server;
+
+import ar.edu.itba.pod.rmi.Categories;
 
 import java.util.LinkedList;
 import java.util.Objects;

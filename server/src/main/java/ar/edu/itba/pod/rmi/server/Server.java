@@ -22,11 +22,11 @@ public class Server {
             final Registry registry = LocateRegistry.getRegistry();
             final Remote adminRemote = UnicastRemoteObject.exportObject(servant,0);
             registry.rebind("Airport-Service",adminRemote);
+            logger.info("Server is ready");
         }catch (RemoteException e){
             logger.error("Connection to registry failed");
             logger.error(e.getMessage());
         }
-        logger.info("Server is ready");
 
     }
 }

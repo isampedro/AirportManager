@@ -3,10 +3,7 @@ package ar.edu.itba.pod.rmi.server;
 import ar.edu.itba.pod.rmi.*;
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Servant implements AirportOpsService, LaneRequesterService {
     private final Map<Integer, List<Lane>> laneMap;
@@ -18,28 +15,8 @@ public class Servant implements AirportOpsService, LaneRequesterService {
         }
     }
 
-    @Override
-    public void addFlightToLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException {
-        Flight flight = new Flight(flightId, minimumCategory, airline);
-        Lane minLane = null;
-        for( Integer key : laneMap.keySet() ) {
-            for (Lane lane : laneMap.get(key)) {
-                if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
-                        lane.getState().equals(LaneState.OPEN)){
-                    if(minLane == null)
-                        minLane = lane;
-                    else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
-                        minLane = lane;
-                }
-            }
-        }
-        if (minLane == null)
-            throw new NoAvailableLaneException();
-        else {
-            minLane.addNewFlight(flight);
-            sortLanes();
-        }
-    }
+    //------------------------------------------Admin---------------------------------------//
+
 
     public void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
         for( Integer key : laneMap.keySet() ) {
@@ -47,7 +24,6 @@ public class Servant implements AirportOpsService, LaneRequesterService {
                 throw new LaneNameAlreadyExistsException();
             }
         }
-
         laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
         sortLanes();
     }
@@ -74,7 +50,6 @@ public class Servant implements AirportOpsService, LaneRequesterService {
                 }
             }
         }
-
         throw new LaneNotExistentException();
     }
 
@@ -128,22 +103,23 @@ public class Servant implements AirportOpsService, LaneRequesterService {
     }
 
     public void emitReorder() {
-        List<Flight> flights = new LinkedList<>();
+        Queue<Flight> flights = new LinkedList<>();
 
         while( !emptyAirport() ) {
             for( Integer key : laneMap.keySet() ) {
                 for (Lane lane : laneMap.get(key)) {
                     if (lane.flightsAreAwaiting()) {
-                        flights.add(lane.departFlight());
+                        flights.offer(lane.departFlight());
                     }
                 }
             }
         }
-
-
-
-        // TODO: terminar de reordenar los vuelos
-
+        while (!flights.isEmpty()){
+            Flight flight = flights.poll();
+            try {
+                addFlightToLane(flight.getId(),flight.getDestinyAirport(),flight.getAirline(),flight.getCategory());
+            }catch (NoAvailableLaneException ignored){}
+        }
 
     }
 
@@ -157,6 +133,35 @@ public class Servant implements AirportOpsService, LaneRequesterService {
         }
         return true;
     }
+
+    //------------------------------------------Lane Requester---------------------------------------//
+    @Override
+    public void addFlightToLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException {
+        Flight flight = new Flight(flightId, minimumCategory, airline, destinyAirport);
+        Lane minLane = null;
+        Integer minimumAuth = minimumCategory.getAuthorization();
+        for (int i = minimumAuth; i <= Categories.maxAuthorization(); i++) {
+            for (Lane lane : laneMap.get(i)) {
+                if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
+                        lane.getState().equals(LaneState.OPEN)){
+                    if(minLane == null)
+                        minLane = lane;
+                    else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
+                        minLane = lane;
+                }
+            }
+        }
+        if (minLane == null)
+            throw new NoAvailableLaneException();
+        else {
+            minLane.addNewFlight(flight);
+            sortLanes();
+        }
+    }
+
+
+
+    //------------------------------------------Testing---------------------------------------//
 
     public void printAirports() {
         System.out.println("Airport lanes: ");
