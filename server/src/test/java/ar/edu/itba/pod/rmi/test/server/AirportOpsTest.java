@@ -51,13 +51,8 @@ public class AirportOpsTest {
     }
 
     @Test( expected = SameLaneStateException.class )
-    public void testThrowSameLaneException() throws SameLaneStateException, LaneNotExistentException, LaneNameAlreadyExistsException {
+    public void testThrowSameLaneStateException() throws SameLaneStateException, LaneNotExistentException, LaneNameAlreadyExistsException {
         servantTest.addLane("Airport1", Categories.C);
-        servantTest.addLane("Airport2", Categories.F);
-        servantTest.addLane("Airport3", Categories.A);
-        servantTest.addLane("Airport4", Categories.B);
-        servantTest.addLane("Airport5", Categories.D);
-        servantTest.addLane("Airport6", Categories.E);
         servantTest.openLane("Airport1");
     }
 
