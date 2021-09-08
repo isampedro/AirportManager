@@ -7,12 +7,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Servant implements AirportOpsService, LaneRequesterService {
-    private final List<Lane> laneList = new LinkedList<>();
+    private final List<Lane> laneList;
+
+    public Servant() {
+        this.laneList = new LinkedList<>();
+    }
 
     public void flightLane(int flightId,
-                                  int destinyAirport,
-                                  String airline,
-                                  Categories minimumCategory) throws NoAvailableLaneException{
+                           int destinyAirport,
+                           String airline,
+                           Categories minimumCategory) throws NoAvailableLaneException{
 
         Flight flight = new Flight(flightId, minimumCategory, airline);
         addFlightToLane(flight);
