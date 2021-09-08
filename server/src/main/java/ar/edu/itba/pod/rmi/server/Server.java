@@ -21,7 +21,7 @@ public class Server {
         try {
             final Registry registry = LocateRegistry.getRegistry();
             final Remote adminRemote = UnicastRemoteObject.exportObject(servant,0);
-            registry.rebind("service",adminRemote);
+            registry.rebind("Airport-Service",adminRemote);
         }catch (RemoteException e){
             logger.error("Connection to registry failed");
             logger.error(e.getMessage());

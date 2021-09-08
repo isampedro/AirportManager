@@ -8,7 +8,7 @@ public enum Categories {
     E(5),
     F(6);
 
-    private Integer authorization;
+    private final Integer authorization;
 
     Categories(int authorization){
         this.authorization = authorization;
