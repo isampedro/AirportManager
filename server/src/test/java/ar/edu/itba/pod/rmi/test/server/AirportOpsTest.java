@@ -1,9 +1,8 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.test.server;
 
-import ar.edu.ar.pod.rmi.Categories;
-import ar.edu.ar.pod.rmi.AirportExceptions.*;
-
-import ar.edu.ar.pod.rmi.server.Servant;
+import ar.edu.itba.pod.rmi.Categories;
+import ar.edu.itba.pod.rmi.server.Servant;
+import ar.edu.itba.pod.rmi.AirportExceptions.*;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -12,45 +11,45 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class AirportOpsTest {
-    private final Servant servant = new Servant();
+    private final Servant servantTest = new Servant();
     @Test
     @BeforeAll
     public void testAddLane() throws LaneNameAlreadyExistsException {
-        servant.addLane("Airport1", Categories.C);
-        servant.addLane("Airport2", Categories.F);
-        servant.addLane("Airport3", Categories.A);
-        servant.addLane("Airport4", Categories.B);
-        servant.addLane("Airport5", Categories.D);
-        servant.addLane("Airport6", Categories.E);
-        assertEquals(6, servant.getLanesQuantity());
+        servantTest.addLane("Airport1", Categories.C);
+        servantTest.addLane("Airport2", Categories.F);
+        servantTest.addLane("Airport3", Categories.A);
+        servantTest.addLane("Airport4", Categories.B);
+        servantTest.addLane("Airport5", Categories.D);
+        servantTest.addLane("Airport6", Categories.E);
+        assertEquals(6, servantTest.getLanesQuantity());
     }
 
     @Test
     public void testLanesOpenClose() throws LaneNotExistentException, SameLaneStateException {
-        assertTrue( servant.isOpen("Airport1") );
-        servant.closeLane( "Airport1" );
-        assertFalse( servant.isOpen("Airport1") );
-        servant.openLane( "Airport1" );
-        assertTrue( servant.isOpen("Airport1") );
+        assertTrue( servantTest.isOpen("Airport1") );
+        servantTest.closeLane( "Airport1" );
+        assertFalse( servantTest.isOpen("Airport1") );
+        servantTest.openLane( "Airport1" );
+        assertTrue( servantTest.isOpen("Airport1") );
     }
 
     @Test( expected = LaneNameAlreadyExistsException.class )
     public void testThrowLaneNameAlreadyExistsException() throws LaneNameAlreadyExistsException {
-        servant.addLane("Airport1", Categories.A);
+        servantTest.addLane("Airport1", Categories.A);
     }
 
     @Test( expected = SameLaneStateException.class )
     public void testThrowSameLaneException() throws SameLaneStateException, LaneNotExistentException, LaneNameAlreadyExistsException {
-        servant.openLane("Airport1");
+        servantTest.openLane("Airport1");
     }
 
     @Test( expected = LaneNotExistentException.class )
     public void testThrowLaneNotExistentException() throws SameLaneStateException, LaneNotExistentException, LaneNameAlreadyExistsException {
-        servant.closeLane("Airport10");
+        servantTest.closeLane("Airport10");
     }
 
     @Test( expected = LaneNotExistentException.class )
     public void testThrowLaneNotExistenException2() throws LaneNotExistentException{
-        servant.isOpen("Airport10");
+        servantTest.isOpen("Airport10");
     }
 }

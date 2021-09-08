@@ -1,4 +1,4 @@
-package ar.edu.ar.pod.rmi.AirportExceptions;
+package ar.edu.itba.pod.rmi.AirportExceptions;
 
 public class NoAvailableLaneException extends Exception {
 }

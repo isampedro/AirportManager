@@ -1,4 +1,4 @@
-package ar.edu.ar.pod.rmi.client;
+package ar.edu.itba.pod.rmi.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
-package ar.edu.ar.pod.rmi.server;
+package ar.edu.itba.pod.rmi.server;
 
-import ar.edu.ar.pod.rmi.*;
-import ar.edu.ar.pod.rmi.AirportExceptions.*;
+import ar.edu.itba.pod.rmi.*;
+import ar.edu.itba.pod.rmi.AirportExceptions.*;
 
 import java.util.LinkedList;
 import java.util.List;

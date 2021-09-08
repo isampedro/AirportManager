@@ -1,9 +1,9 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.test.server;
 
-import ar.edu.ar.pod.rmi.Categories;
-import ar.edu.ar.pod.rmi.AirportExceptions.*;
+import ar.edu.itba.pod.rmi.Categories;
+import ar.edu.itba.pod.rmi.AirportExceptions.*;
+import ar.edu.itba.pod.rmi.server.Servant;
 
-import ar.edu.ar.pod.rmi.server.Servant;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
