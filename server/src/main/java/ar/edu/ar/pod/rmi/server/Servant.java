@@ -1,17 +1,18 @@
-package ar.edu.ar.pod.rmi.AirportOps;
+package ar.edu.ar.pod.rmi.server;
 
-import Airport.*;
-import AirportExceptions.*;
+import ar.edu.ar.pod.rmi.Categories;
+import ar.edu.ar.pod.rmi.Flight;
+import ar.edu.ar.pod.rmi.Lane;
+import ar.edu.ar.pod.rmi.LaneState;
+import ar.edu.ar.pod.rmi.AirportExceptions.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
+public class Servant {
+    private final List<Lane> laneList = new LinkedList<>();
 
-public class Admin {
-
-    private static final List<Lane> laneList = new LinkedList<>();
-
-    public static void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
+    public void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             throw new LaneNameAlreadyExistsException();
         }
@@ -19,7 +20,7 @@ public class Admin {
         laneList.add( new Lane(laneName, category));
     }
 
-    public static boolean isOpen( String laneName ) throws LaneNotExistentException {
+    public boolean isOpen( String laneName ) throws LaneNotExistentException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             for( Lane lane: laneList ) {
                 if( lane.getName().equals(laneName) ) {
@@ -30,7 +31,7 @@ public class Admin {
         throw new LaneNotExistentException();
     }
 
-    private static void setLaneState( String laneName, LaneState state ) throws  SameLaneStateException {
+    private void setLaneState( String laneName, LaneState state ) throws  SameLaneStateException {
         for( Lane lane: laneList ) {
             if( lane.getName().equals(laneName) ) {
                 if( !lane.getState().equals(state) ) {
@@ -43,7 +44,7 @@ public class Admin {
         }
     }
 
-    public static void openLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
+    public void openLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             setLaneState( laneName, LaneState.OPEN );
             return;
@@ -52,7 +53,7 @@ public class Admin {
         throw new LaneNotExistentException();
     }
 
-    public static void closeLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
+    public void closeLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
         if( laneList.stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
             setLaneState( laneName, LaneState.CLOSED );
             return;
@@ -61,7 +62,7 @@ public class Admin {
         throw new LaneNotExistentException();
     }
 
-    public static void emitDeparture() {
+    public void emitDeparture() {
         for( Lane lane : laneList ) {
             if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
                 lane.departFlight();
@@ -69,7 +70,7 @@ public class Admin {
         }
     }
 
-    public static void emitReorder() {
+    public void emitReorder() {
         List<Flight> flights = new LinkedList<>();
 
         for( Lane lane : laneList ) {
@@ -100,12 +101,12 @@ public class Admin {
             minLane.addNewFlight(flight);
     }
 
-    public static void printAirports() {
+    public void printAirports() {
         System.out.println("Airport lanes: ");
         laneList.forEach(System.out::println);
     }
 
-    public static int getLanesQuantity() {
+    public int getLanesQuantity() {
         return laneList.size();
     }
 }

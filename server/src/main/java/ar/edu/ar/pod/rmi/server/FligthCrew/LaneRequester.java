@@ -1,8 +1,9 @@
-package ar.edu.ar.pod.rmi.FligthCrew;
+package ar.edu.ar.pod.rmi.server.FligthCrew;
 
-import Airport.*;
-import AirportExceptions.*;
-import AirportOps.Admin;
+import ar.edu.ar.pod.rmi.Categories;
+import ar.edu.ar.pod.rmi.Flight;
+import ar.edu.ar.pod.rmi.AirportExceptions.*;
+import ar.edu.ar.pod.rmi.server.AirportOps.Admin;
 
 public class LaneRequester{
     public static void flightLane(int flightId,

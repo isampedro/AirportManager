@@ -1,4 +1,4 @@
-package ar.edu.ar.pod.rmi.server;
+package ar.edu.ar.pod.rmi;
 
 public enum LaneState {
     OPEN,

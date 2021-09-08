@@ -1,4 +1,4 @@
-package ar.edu.ar.pod.rmi;
+package ar.edu.itba.pod.rmi;
 
 import Airport.Categories;
 import AirportExceptions.LaneNameAlreadyExistsException;
