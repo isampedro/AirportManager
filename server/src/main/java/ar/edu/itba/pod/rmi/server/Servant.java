@@ -13,7 +13,7 @@ public class Servant implements AirportOpsService, LaneRequesterService {
 
     public Servant() {
         this.laneMap = new HashMap<>();
-        for (int i = 1; i < Categories.maxAuthorization() ; i++) {
+        for (int i = 1; i <= Categories.maxAuthorization() ; i++) {
             laneMap.put(i, new LinkedList<>());
         }
     }
@@ -47,6 +47,7 @@ public class Servant implements AirportOpsService, LaneRequesterService {
                 throw new LaneNameAlreadyExistsException();
             }
         }
+
         laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
         sortLanes();
     }
