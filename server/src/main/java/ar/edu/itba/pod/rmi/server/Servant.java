@@ -2,14 +2,19 @@ package ar.edu.itba.pod.rmi.server;
 
 import ar.edu.itba.pod.rmi.*;
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
+import com.sun.prism.ReadbackGraphics;
 
+import java.rmi.RemoteException;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Servant implements AirportOpsService, LaneRequesterService {
     private final Map<Integer, List<Lane>> laneMap;
+    private final Map<String,Map<Integer,ArrayList<FlightTracingService>>> registeredAirlines;
 
     public Servant() {
         this.laneMap = new HashMap<>();
+        this.registeredAirlines = new HashMap<>();
         for (int i = 1; i <= Categories.maxAuthorization() ; i++) {
             laneMap.put(i, new LinkedList<>());
         }
@@ -159,7 +164,27 @@ public class Servant implements AirportOpsService, LaneRequesterService {
         }
     }
 
+    //------------------------------------------Flight Tracer---------------------------------------//
 
+    public void registerAirline(String airline, int flightId, FlightTracingService handler){
+        registeredAirlines.putIfAbsent(airline,new HashMap<>());
+        registeredAirlines.get(airline).putIfAbsent(flightId,new ArrayList<>());
+        registeredAirlines.get(airline).get(flightId).add(handler);
+
+    }
+
+
+    private void notifyAirlines(Flight flight, String notification) {
+        if(!registeredAirlines.containsKey(flight.getAirline()))
+            return;
+        registeredAirlines.get(flight.getAirline()).get(flight.getId()).forEach(handler->{
+           try {
+               handler.notifyEvent(notification);
+           }catch (RemoteException e){
+               e.printStackTrace();
+           }
+        });
+    }
 
     //------------------------------------------Testing---------------------------------------//
 
