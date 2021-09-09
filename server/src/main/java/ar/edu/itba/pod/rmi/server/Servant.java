@@ -2,11 +2,9 @@ package ar.edu.itba.pod.rmi.server;
 
 import ar.edu.itba.pod.rmi.*;
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
-import com.sun.prism.ReadbackGraphics;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class Servant implements AirportOpsService, LaneRequesterService {
     private final Map<Integer, List<Lane>> laneMap;
