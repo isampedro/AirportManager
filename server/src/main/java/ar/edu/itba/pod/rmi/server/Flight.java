@@ -3,10 +3,10 @@ package ar.edu.itba.pod.rmi.server;
 import ar.edu.itba.pod.rmi.Categories;
 
 public class Flight {
-    int id;
-    Categories category;
-    String airline;
-    int destinyAirport;
+    private final int id;
+    private final Categories category;
+    private final String airline;
+    private final int destinyAirport;
     public Flight(int id, Categories category, String airline, int destinyAirport) {
         this.id = id;
         this.category = category;
