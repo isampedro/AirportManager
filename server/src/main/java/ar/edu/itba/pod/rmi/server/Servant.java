@@ -6,13 +6,15 @@ import ar.edu.itba.pod.rmi.AirportExceptions.*;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class Servant implements AirportOpsService, LaneRequesterService {
+public class Servant implements AirportOpsService, LaneRequesterService, QueryService {
     private final Map<Integer, List<Lane>> laneMap;
+    private final Map<String, List<Flight>> flightHistory;
     private final Map<String,Map<Integer,ArrayList<FlightTracingService>>> registeredAirlines;
 
     public Servant() {
         this.laneMap = new HashMap<>();
         this.registeredAirlines = new HashMap<>();
+        this.flightHistory = new HashMap<>();
         for (int i = 1; i <= Categories.maxAuthorization() ; i++) {
             laneMap.put(i, new LinkedList<>());
         }
@@ -96,10 +98,13 @@ public class Servant implements AirportOpsService, LaneRequesterService {
     }
 
     public void emitDeparture() {
+        Flight flight;
         for( Integer key : laneMap.keySet() ) {
             for( Lane lane : laneMap.get(key) ) {
                 if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
-                    lane.departFlight();
+                    flight = lane.departFlight();
+                    flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
+                    flightHistory.get(lane.getName()).add(flight);
                 }
             }
         }
@@ -183,6 +188,38 @@ public class Servant implements AirportOpsService, LaneRequesterService {
            }
         });
     }
+
+    //------------------------------------------Query---------------------------------------//
+
+
+    @Override
+    public List<Integer> getTakeoffsForAirport() throws RemoteException {
+        final List<Integer> flightsIds = new LinkedList<>();
+        this.flightHistory.values().forEach(flights -> flights.forEach(flight -> flightsIds.add(flight.getId())));
+        return flightsIds;
+    }
+
+    @Override
+    public List<Integer> getTakeoffsForAirline(String airline) throws RemoteException {
+        final List<Integer> flightsIds = new LinkedList<>();
+        this.flightHistory.values().forEach(flights -> flights.forEach(flight -> {
+            if(flight.getAirline().equals(airline)) {
+                flightsIds.add(flight.getId());
+            }
+        }));
+        return flightsIds;
+    }
+
+    @Override
+    public List<Integer> getTakeoffsForLane(String laneName) throws RemoteException {
+        final List<Integer> flightsIds = new LinkedList<>();
+
+        Optional.ofNullable(this.flightHistory.get(laneName))
+                .ifPresent(flights -> flights
+                        .forEach(flight -> flightsIds.add(flight.getId())));
+        return flightsIds;
+    }
+
 
     //------------------------------------------Testing---------------------------------------//
 
