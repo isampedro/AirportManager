@@ -3,6 +3,7 @@ package ar.edu.itba.pod.rmi.server;
 import ar.edu.itba.pod.rmi.Categories;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 
@@ -65,6 +66,9 @@ public class Lane {
         return -1;
     }
 
+    public List<Flight> getFlightsList(){
+        return new LinkedList<>(this.flights);
+    }
 
     @Override
     public boolean equals(Object o) {

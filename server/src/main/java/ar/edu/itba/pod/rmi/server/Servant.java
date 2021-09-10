@@ -130,6 +130,8 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                         flight = lane.departFlight();
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
+                        notifyAirlines(flight,Events.DEPARTURE,lane);
+                        lane.getFlightsList().forEach(f->notifyAirlines(f,Events.ADVANCE, lane));
                     }
                 }
             }
@@ -198,6 +200,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                 throw new NoAvailableLaneException();
             else {
                 minLane.addNewFlight(flight);
+                notifyAirlines(flight,Events.ASSIGNED,minLane);
                 sortLanes();
             }
         } finally {
@@ -215,7 +218,6 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
 
     }
 
-//TODO HACER LOS LLAMADOS
     private void notifyAirlines(Flight flight, Events event, Lane lane) {
         if(!registeredAirlines.containsKey(flight.getAirline()))
             return;
