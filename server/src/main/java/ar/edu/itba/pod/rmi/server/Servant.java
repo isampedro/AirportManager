@@ -229,28 +229,44 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
     @Override
     public List<Integer> getTakeoffsForAirport() throws RemoteException {
         final List<Integer> flightsIds = new LinkedList<>();
-        this.flightHistory.values().forEach(flights -> flights.forEach(flight -> flightsIds.add(flight.getId())));
+        laneLock.readLock().lock();
+        try {
+            this.flightHistory.values().forEach(flights -> flights.forEach(flight -> flightsIds.add(flight.getId())));
+        } finally {
+            laneLock.readLock().unlock();
+        }
         return flightsIds;
     }
 
     @Override
     public List<Integer> getTakeoffsForAirline(String airline) throws RemoteException {
         final List<Integer> flightsIds = new LinkedList<>();
-        this.flightHistory.values().forEach(flights -> flights.forEach(flight -> {
-            if(flight.getAirline().equals(airline)) {
-                flightsIds.add(flight.getId());
-            }
-        }));
+        laneLock.readLock().lock();
+        try {
+            this.flightHistory.values().forEach(flights -> flights.forEach(flight -> {
+                if(flight.getAirline().equals(airline)) {
+                    flightsIds.add(flight.getId());
+                }
+            }));
+        } finally {
+            laneLock.readLock().unlock();
+        }
+
         return flightsIds;
     }
 
     @Override
     public List<Integer> getTakeoffsForLane(String laneName) throws RemoteException {
         final List<Integer> flightsIds = new LinkedList<>();
+        laneLock.readLock().lock();
+        try {
+            Optional.ofNullable(this.flightHistory.get(laneName))
+                    .ifPresent(flights -> flights
+                            .forEach(flight -> flightsIds.add(flight.getId())));
+        } finally {
+            laneLock.readLock().unlock();
+        }
 
-        Optional.ofNullable(this.flightHistory.get(laneName))
-                .ifPresent(flights -> flights
-                        .forEach(flight -> flightsIds.add(flight.getId())));
         return flightsIds;
     }
 
@@ -259,13 +275,23 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
 
     public void printAirports() {
         System.out.println("Airport lanes: ");
-        laneMap.values().forEach( lane -> lane.forEach(System.out::println));
+        laneLock.readLock().lock();
+        try {
+            laneMap.values().forEach( lane -> lane.forEach(System.out::println));
+        } finally {
+            laneLock.readLock().unlock();
+        }
     }
 
     public int getLanesQuantity() {
         int size = 0;
-        for( Integer key : laneMap.keySet() ) {
-            size += laneMap.get(key).size();
+        laneLock.readLock().lock();
+        try {
+            for (Integer key : laneMap.keySet()) {
+                size += laneMap.get(key).size();
+            }
+        } finally {
+            laneLock.readLock().unlock();
         }
         return size;
     }
