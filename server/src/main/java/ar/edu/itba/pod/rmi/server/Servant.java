@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Servant implements AirportOpsService, LaneRequesterService, QueryService {
-    ReadWriteLock laneLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock laneLock = new ReentrantReadWriteLock();
 
     private final Map<Integer, List<Lane>> laneMap;
     private final Map<String, List<Flight>> flightHistory;

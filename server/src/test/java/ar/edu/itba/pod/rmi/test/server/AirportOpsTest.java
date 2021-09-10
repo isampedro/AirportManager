@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class AirportOpsTest {
-    private Servant servantTest = new Servant();
+    private final Servant servantTest = new Servant();
     @Test
     @BeforeAll
     public void testAddLane() throws LaneNameAlreadyExistsException {
@@ -58,7 +58,7 @@ public class AirportOpsTest {
     }
 
     @Test( expected = LaneNotExistentException.class )
-    public void testThrowLaneNotExistentException() throws SameLaneStateException, LaneNotExistentException, LaneNameAlreadyExistsException {
+    public void testThrowLaneNotExistentException() throws SameLaneStateException, LaneNotExistentException {
         servantTest.closeLane("Airport10");
     }
 
