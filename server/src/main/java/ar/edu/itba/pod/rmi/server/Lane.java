@@ -55,6 +55,17 @@ public class Lane {
         return category;
     }
 
+    public int getFlightsAhead(Flight flight){
+        int counter = 0;
+        for (Flight currentFlight : flights) {
+            if (currentFlight.equals(flight))
+                return counter;
+            counter++;
+        }
+        return -1;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.Services;
 
 
 import java.rmi.Remote;

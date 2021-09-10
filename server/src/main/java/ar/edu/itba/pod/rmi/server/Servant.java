@@ -2,18 +2,22 @@ package ar.edu.itba.pod.rmi.server;
 
 import ar.edu.itba.pod.rmi.*;
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
+import ar.edu.itba.pod.rmi.Services.AirportOpsService;
+import ar.edu.itba.pod.rmi.Services.FlightTracingService;
+import ar.edu.itba.pod.rmi.Services.LaneRequesterService;
+import ar.edu.itba.pod.rmi.Services.QueryService;
 
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class Servant implements AirportOpsService, LaneRequesterService, QueryService {
+public class Servant implements AirportOpsService, LaneRequesterService, FlightTracingService, QueryService {
     private final ReadWriteLock laneLock = new ReentrantReadWriteLock();
 
     private final Map<Integer, List<Lane>> laneMap;
     private final Map<String, List<Flight>> flightHistory;
-    private final Map<String,Map<Integer,ArrayList<FlightTracingService>>> registeredAirlines;
+    private final Map<String,Map<Integer,ArrayList<Notifications>>> registeredAirlines;
 
     public Servant() {
         this.laneMap = new HashMap<>();
@@ -172,7 +176,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
 
     //------------------------------------------Lane Requester---------------------------------------//
     @Override
-    public void addFlightToLane(int flightId, int destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException {
+    public void addFlightToLane(int flightId, String destinyAirport, String airline, Categories minimumCategory) throws NoAvailableLaneException {
         Flight flight = new Flight(flightId, minimumCategory, airline, destinyAirport);
         Lane minLane = null;
         Integer minimumAuth = minimumCategory.getAuthorization();
@@ -203,20 +207,25 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
 
     //------------------------------------------Flight Tracer---------------------------------------//
 
-    public synchronized void registerAirline(String airline, int flightId, FlightTracingService handler){
+    @Override
+    public synchronized void registerAirline(String airline, int flightId, Notifications handler){
         registeredAirlines.putIfAbsent(airline,new HashMap<>());
         registeredAirlines.get(airline).putIfAbsent(flightId,new ArrayList<>());
         registeredAirlines.get(airline).get(flightId).add(handler);
 
     }
 
-
-    private void notifyAirlines(Flight flight, String notification) {
+//TODO HACER LOS LLAMADOS
+    private void notifyAirlines(Flight flight, Events event, Lane lane) {
         if(!registeredAirlines.containsKey(flight.getAirline()))
             return;
         registeredAirlines.get(flight.getAirline()).get(flight.getId()).forEach(handler->{
            try {
-               handler.notifyEvent(notification);
+               if (event.equals(Events.DEPARTURE))
+                   handler.notifyEvent(event, flight.getDestinyAirport(), lane.getName(), 0);
+               else {
+                   handler.notifyEvent(event, flight.getDestinyAirport(), lane.getName(), lane.getFlightsAhead(flight));
+               }
            }catch (RemoteException e){
                e.printStackTrace();
            }

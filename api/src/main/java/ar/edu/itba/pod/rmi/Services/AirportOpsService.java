@@ -1,9 +1,10 @@
-package ar.edu.itba.pod.rmi;
+package ar.edu.itba.pod.rmi.Services;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
+import ar.edu.itba.pod.rmi.Categories;
 
 public interface AirportOpsService extends Remote {
     void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException, RemoteException;

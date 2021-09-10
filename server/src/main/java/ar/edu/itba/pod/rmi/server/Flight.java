@@ -6,15 +6,15 @@ public class Flight {
     private final int id;
     private final Categories category;
     private final String airline;
-    private final int destinyAirport;
-    public Flight(int id, Categories category, String airline, int destinyAirport) {
+    private final String destinyAirport;
+    public Flight(int id, Categories category, String airline, String destinyAirport) {
         this.id = id;
         this.category = category;
         this.airline = airline;
         this.destinyAirport = destinyAirport;
     }
 
-    public int getDestinyAirport() {
+    public String getDestinyAirport() {
         return destinyAirport;
     }
 
