@@ -5,8 +5,12 @@ import ar.edu.itba.pod.rmi.AirportExceptions.*;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Servant implements AirportOpsService, LaneRequesterService, QueryService {
+    ReadWriteLock laneLock = new ReentrantReadWriteLock();
+
     private final Map<Integer, List<Lane>> laneMap;
     private final Map<String, List<Flight>> flightHistory;
     private final Map<String,Map<Integer,ArrayList<FlightTracingService>>> registeredAirlines;
@@ -24,13 +28,18 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
 
 
     public void addLane( String laneName, Categories category ) throws LaneNameAlreadyExistsException {
-        for( Integer key : laneMap.keySet() ) {
-            if (laneMap.get(key).stream().anyMatch((lane) -> lane.getName().equals(laneName))) {
-                throw new LaneNameAlreadyExistsException();
+        laneLock.writeLock().lock();
+        try {
+            for( Integer key : laneMap.keySet() ) {
+                if (laneMap.get(key).stream().anyMatch((lane) -> lane.getName().equals(laneName))) {
+                    throw new LaneNameAlreadyExistsException();
+                }
             }
+            laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
+            sortLanes();
+        } finally {
+            laneLock.writeLock().unlock();
         }
-        laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
-        sortLanes();
     }
 
     private void sortLanes() {
@@ -48,31 +57,41 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
     }
 
     public boolean isOpen( String laneName ) throws LaneNotExistentException {
-        for( Integer key : laneMap.keySet() ) {
-            for( Lane lane: laneMap.get(key) ) {
-                if( lane.getName().equals(laneName) ) {
-                    return lane.getState().equals(LaneState.OPEN);
-                }
-            }
-        }
-        throw new LaneNotExistentException();
-    }
-
-    private void setLaneState( String laneName, LaneState state ) throws  SameLaneStateException, LaneNotExistentException {
-        for( Integer key : laneMap.keySet() ) {
-            for( Lane lane: laneMap.get(key) ) {
-                if( lane.getName().equals(laneName) ) {
-                    if( !lane.getState().equals(state) ) {
-                        lane.setState(state);
-                        return;
-                    } else {
-                        throw new SameLaneStateException();
+        laneLock.readLock().lock();
+        try {
+            for( Integer key : laneMap.keySet() ) {
+                for( Lane lane: laneMap.get(key) ) {
+                    if( lane.getName().equals(laneName) ) {
+                        return lane.getState().equals(LaneState.OPEN);
                     }
                 }
             }
+            throw new LaneNotExistentException();
+        } finally {
+            laneLock.readLock().unlock();
         }
+    }
 
-        throw new LaneNotExistentException();
+    private void setLaneState( String laneName, LaneState state ) throws  SameLaneStateException, LaneNotExistentException {
+        laneLock.writeLock().lock();
+        try {
+            for( Integer key : laneMap.keySet() ) {
+                for( Lane lane: laneMap.get(key) ) {
+                    if( lane.getName().equals(laneName) ) {
+                        if( !lane.getState().equals(state) ) {
+                            lane.setState(state);
+                            return;
+                        } else {
+                            throw new SameLaneStateException();
+                        }
+                    }
+                }
+            }
+
+            throw new LaneNotExistentException();
+        } finally {
+            laneLock.writeLock().unlock();
+        }
     }
 
     public void openLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
@@ -99,34 +118,43 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
 
     public void emitDeparture() {
         Flight flight;
-        for( Integer key : laneMap.keySet() ) {
-            for( Lane lane : laneMap.get(key) ) {
-                if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
-                    flight = lane.departFlight();
-                    flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
-                    flightHistory.get(lane.getName()).add(flight);
+        laneLock.writeLock().lock();
+        try {
+            for( Integer key : laneMap.keySet() ) {
+                for( Lane lane : laneMap.get(key) ) {
+                    if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
+                        flight = lane.departFlight();
+                        flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
+                        flightHistory.get(lane.getName()).add(flight);
+                    }
                 }
             }
+        } finally {
+            laneLock.writeLock().unlock();
         }
     }
 
     public void emitReorder() {
         Queue<Flight> flights = new LinkedList<>();
-
-        while( !emptyAirport() ) {
-            for( Integer key : laneMap.keySet() ) {
-                for (Lane lane : laneMap.get(key)) {
-                    if (lane.flightsAreAwaiting()) {
-                        flights.offer(lane.departFlight());
+        laneLock.writeLock().lock();
+        try {
+            while( !emptyAirport() ) {
+                for( Integer key : laneMap.keySet() ) {
+                    for (Lane lane : laneMap.get(key)) {
+                        if (lane.flightsAreAwaiting()) {
+                            flights.offer(lane.departFlight());
+                        }
                     }
                 }
             }
-        }
-        while (!flights.isEmpty()){
-            Flight flight = flights.poll();
-            try {
-                addFlightToLane(flight.getId(),flight.getDestinyAirport(),flight.getAirline(),flight.getCategory());
-            }catch (NoAvailableLaneException ignored){}
+            while (!flights.isEmpty()){
+                Flight flight = flights.poll();
+                try {
+                    addFlightToLane(flight.getId(),flight.getDestinyAirport(),flight.getAirline(),flight.getCategory());
+                } catch (NoAvailableLaneException ignored){}
+            }
+        } finally {
+            laneLock.writeLock().unlock();
         }
 
     }
@@ -148,28 +176,34 @@ public class Servant implements AirportOpsService, LaneRequesterService, QuerySe
         Flight flight = new Flight(flightId, minimumCategory, airline, destinyAirport);
         Lane minLane = null;
         Integer minimumAuth = minimumCategory.getAuthorization();
-        for (int i = minimumAuth; i <= Categories.maxAuthorization(); i++) {
-            for (Lane lane : laneMap.get(i)) {
-                if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
-                        lane.getState().equals(LaneState.OPEN)){
-                    if(minLane == null)
-                        minLane = lane;
-                    else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
-                        minLane = lane;
+
+        laneLock.writeLock().lock();
+        try {
+            for (int i = minimumAuth; i <= Categories.maxAuthorization(); i++) {
+                for (Lane lane : laneMap.get(i)) {
+                    if(lane.getCategory().isHigherOrEqual(flight.getCategory()) &&
+                            lane.getState().equals(LaneState.OPEN)){
+                        if(minLane == null)
+                            minLane = lane;
+                        else if(lane.getFlightsQuantity() < minLane.getFlightsQuantity())
+                            minLane = lane;
+                    }
                 }
             }
-        }
-        if (minLane == null)
-            throw new NoAvailableLaneException();
-        else {
-            minLane.addNewFlight(flight);
-            sortLanes();
+            if (minLane == null)
+                throw new NoAvailableLaneException();
+            else {
+                minLane.addNewFlight(flight);
+                sortLanes();
+            }
+        } finally {
+            laneLock.writeLock().unlock();
         }
     }
 
     //------------------------------------------Flight Tracer---------------------------------------//
 
-    public void registerAirline(String airline, int flightId, FlightTracingService handler){
+    public synchronized void registerAirline(String airline, int flightId, FlightTracingService handler){
         registeredAirlines.putIfAbsent(airline,new HashMap<>());
         registeredAirlines.get(airline).putIfAbsent(flightId,new ArrayList<>());
         registeredAirlines.get(airline).get(flightId).add(handler);
