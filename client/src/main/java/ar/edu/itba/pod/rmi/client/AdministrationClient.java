@@ -43,8 +43,11 @@ public class AdministrationClient {
                 }
             }
 
-            if(!(actionName.equals(ClientsActionNames.TAKE_OFF) || actionName.equals(ClientsActionNames.REORDER))) {
+            if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)
+                    throw new WrongNumberOfArgumentsException();
+            } else if(!(actionName.equals(ClientsActionNames.TAKE_OFF) || actionName.equals(ClientsActionNames.REORDER))) {
+                if(runwayName == null)
                     throw new WrongNumberOfArgumentsException();
             } else {
                 if(runwayName != null || minimumCategory != null)

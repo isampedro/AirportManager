@@ -61,7 +61,7 @@ public class LaneRequestClient {
         ArrayList<Line> parsedLines = new ArrayList<>();
         String[] lineArgs;
         String line;
-
+        boolean title = true;
         try {
             FileReader fileReader =
                     new FileReader(fileName);
@@ -70,9 +70,12 @@ public class LaneRequestClient {
                     new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null) {
-                lineArgs = line.split(";");
-                parsedLines.add(new Line(Integer.parseInt(lineArgs[0]), lineArgs[1],
-                        lineArgs[2], Categories.parseString(lineArgs[3])));
+                if(title) {
+                    title = false;
+                } else {
+                    lineArgs = line.split(";");
+                    parsedLines.add(new Line(Integer.parseInt(lineArgs[0]), lineArgs[1], lineArgs[2], Categories.parseString(lineArgs[3])));
+                }
             }
 
             bufferedReader.close();
