@@ -15,6 +15,7 @@ public class AdministrationClient {
     private static final Logger logger = LoggerFactory.getLogger(AdministrationClient.class);
     private static String address;
     private static ClientsActionNames actionName;
+    private final static int LIM_L = 2, LIM_R = 4;
 
     private static String runwayName = null;
     private static Categories minimumCategory = null;
@@ -23,8 +24,8 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            if (args.length < 2 || args.length > 4)
-                throw new WrongNumberOfArgumentsException();
+            if (args.length < LIM_L || args.length > LIM_R)
+                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
@@ -45,10 +46,10 @@ public class AdministrationClient {
 
             if(!(actionName.equals(ClientsActionNames.TAKE_OFF) || actionName.equals(ClientsActionNames.REORDER))) {
                 if(runwayName == null || minimumCategory == null)
-                    throw new WrongNumberOfArgumentsException();
+                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             } else {
                 if(runwayName != null || minimumCategory != null)
-                    throw new WrongNumberOfArgumentsException();
+                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             }
         } catch (Exception e) {
             logger.error(e.getMessage());

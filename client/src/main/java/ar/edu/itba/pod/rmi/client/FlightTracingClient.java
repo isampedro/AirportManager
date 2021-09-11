@@ -14,16 +14,15 @@ public class FlightTracingClient {
     private static String address;
     private static String airline;
     private static int flightId;
-
-
+    private static int LIM = 3;
 
 
     public static void main(String[] args) {
         logger.info("Flight tracing client starting...");
 
         try {
-            if (args.length != 3 )
-                throw new WrongNumberOfArgumentsException();
+            if (args.length != LIM )
+                throw new WrongNumberOfArgumentsException(LIM);
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];

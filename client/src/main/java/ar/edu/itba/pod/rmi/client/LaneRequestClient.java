@@ -18,13 +18,14 @@ public class LaneRequestClient {
     private static final Logger logger = LoggerFactory.getLogger(LaneRequestClient.class);
     private static String address;
     private static String csvInFileName;
+    private static final int LIM = 2;
 
     public static void main(String[] args) {
         logger.info("Lane request client starting...");
 
         try {
-            if (args.length != 2)
-                throw new WrongNumberOfArgumentsException();
+            if (args.length != LIM)
+                throw new WrongNumberOfArgumentsException(LIM);
             for (String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
