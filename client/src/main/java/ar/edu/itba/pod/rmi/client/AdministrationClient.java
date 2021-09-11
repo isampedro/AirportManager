@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.Naming;
+import java.util.List;
+import java.util.Map;
 
 
 public class AdministrationClient {
@@ -60,20 +62,26 @@ public class AdministrationClient {
             switch (actionName) {
                 case ADD:
                     opsService.addLane(runwayName, minimumCategory);
+                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case OPEN:
                     opsService.openLane(runwayName);
+                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case CLOSE:
                     opsService.closeLane(runwayName);
+                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case STATUS:
                     opsService.isOpen(runwayName);
+                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case TAKE_OFF:
-                    opsService.emitDeparture();
+                    logger.info(opsService.emitDeparture().size() + " flights departed");
                 case REORDER:
-                    opsService.emitReorder();
+                    Map<Boolean, List<Integer>> reordered = opsService.emitReorder();
+                    reordered.get(false).forEach(flight -> logger.info("Cannot assign Flight " + flight));
+                    logger.info(reordered.get(true).size() + " flights assigned.");
                     break;
             }
         } catch (Exception e) {

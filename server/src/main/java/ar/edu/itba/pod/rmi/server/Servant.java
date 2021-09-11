@@ -6,6 +6,7 @@ import ar.edu.itba.pod.rmi.Services.AirportOpsService;
 import ar.edu.itba.pod.rmi.Services.FlightTracingService;
 import ar.edu.itba.pod.rmi.Services.LaneRequesterService;
 import ar.edu.itba.pod.rmi.Services.QueryService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -45,7 +46,6 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
             laneLock.writeLock().unlock();
         }
     }
-
     private void sortLanes() {
         for( Integer key : laneMap.keySet() ) {
             laneMap.get(key).sort( (lane1, lane2) -> {
@@ -120,14 +120,16 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         throw new LaneNotExistentException();
     }
 
-    public void emitDeparture() {
+    public List<Integer> emitDeparture() {
         Flight flight;
+        final List<Integer> departed = new LinkedList<>();
         laneLock.writeLock().lock();
         try {
             for( Integer key : laneMap.keySet() ) {
                 for( Lane lane : laneMap.get(key) ) {
                     if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
                         flight = lane.departFlight();
+                        departed.add(flight.getId());
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
                         notifyAirlines(flight,Events.DEPARTURE,lane);
@@ -138,10 +140,15 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         } finally {
             laneLock.writeLock().unlock();
         }
+        return departed;
     }
 
-    public void emitReorder() {
+    public Map<Boolean, List<Integer>> emitReorder() {
         Queue<Flight> flights = new LinkedList<>();
+        Map<Boolean, List<Integer>> reorderedFlights = new HashMap<>();
+        reorderedFlights.put(true, new ArrayList<>());
+        reorderedFlights.put(false, new ArrayList<>());
+
         laneLock.writeLock().lock();
         try {
             while( !emptyAirport() ) {
@@ -157,12 +164,15 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                 Flight flight = flights.poll();
                 try {
                     addFlightToLane(flight.getId(),flight.getDestinyAirport(),flight.getAirline(),flight.getCategory());
-                } catch (NoAvailableLaneException ignored){}
+                    reorderedFlights.get(true).add(flight.getId());
+                } catch (NoAvailableLaneException e){
+                    reorderedFlights.get(false).add(flight.getId());
+                }
             }
         } finally {
             laneLock.writeLock().unlock();
         }
-
+        return reorderedFlights;
     }
 
     private boolean emptyAirport() {

@@ -2,6 +2,8 @@ package ar.edu.itba.pod.rmi.Services;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 import ar.edu.itba.pod.rmi.AirportExceptions.*;
 import ar.edu.itba.pod.rmi.Categories;
@@ -15,8 +17,8 @@ public interface AirportOpsService extends Remote {
 
     void closeLane( String laneName ) throws SameLaneStateException, LaneNotExistentException, RemoteException;
 
-    void emitDeparture() throws RemoteException;
+    List<Integer> emitDeparture() throws RemoteException;
 
-    void emitReorder() throws RemoteException;
+    Map<Boolean, List<Integer>> emitReorder() throws RemoteException;
 
     }

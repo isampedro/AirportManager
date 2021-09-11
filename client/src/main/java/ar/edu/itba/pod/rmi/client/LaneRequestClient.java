@@ -41,11 +41,17 @@ public class LaneRequestClient {
 
             ArrayList<Line> requests = parseCsv(csvInFileName);
             LaneRequesterService requesterService = (LaneRequesterService) Naming.lookup("//" + address + "/Airport-Service");
+            int i = 0;
             for(Line request: requests) {
-                requesterService.addFlightToLane(request.flightId, request.destinyAirport,
-                        request.airlineName, request.minimumCategory);
+                try {
+                    requesterService.addFlightToLane(request.flightId, request.destinyAirport,
+                            request.airlineName, request.minimumCategory);
+                    i++;
+                } catch (Exception e) {
+                    logger.info("Cannot assign Flight " + request.flightId);
+                }
             }
-
+            logger.info(i + " flights assigned.");
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
