@@ -133,8 +133,13 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
                         notifyAirlines(flight,Events.DEPARTURE,lane);
-                        lane.getFlightsList().forEach(f->notifyAirlines(f,Events.ADVANCE, lane));
+                        lane.getFlightsList().forEach(f-> notifyAirlines(f,Events.ADVANCE, lane));
                     }
+                }
+            }
+            for( Integer key : laneMap.keySet() ) {
+                for (Lane lane : laneMap.get(key)) {
+                    lane.getFlightsList().forEach(Flight::increaseTakeOffsOrdersQuantity);
                 }
             }
         } finally {
@@ -248,47 +253,64 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
 
 
     @Override
-    public List<Integer> getTakeoffsForAirport() throws RemoteException {
-        final List<Integer> flightsIds = new LinkedList<>();
+    public List<String> getTakeoffsForAirport() throws RemoteException {
+        final List<String> flights = new LinkedList<>();
         laneLock.readLock().lock();
         try {
-            this.flightHistory.values().forEach(flights -> flights.forEach(flight -> flightsIds.add(flight.getId())));
-        } finally {
+            this.flightHistory
+                    .forEach((key, value) -> this.flightHistory.get(key)
+                    .forEach(flight -> flights.add( flight.getTakeOffsOrdersQuantity() + ";" + key + ";" + flight.getId() + ";"
+                            + flight.getDestinyAirport() + ";" + flight.getAirline())));
+        }
+        /* try {
+            this.flightHistory.values().forEach(flights -> flights
+                    .forEach(flight -> flightsIds.add(flight.getId())));
+        }  */finally {
             laneLock.readLock().unlock();
         }
-        return flightsIds;
+        return flights;
     }
 
     @Override
-    public List<Integer> getTakeoffsForAirline(String airline) throws RemoteException {
-        final List<Integer> flightsIds = new LinkedList<>();
+    public List<String> getTakeoffsForAirline(String airline) throws RemoteException {
+        final List<String> flights = new LinkedList<>();
         laneLock.readLock().lock();
         try {
+            this.flightHistory
+                    .forEach((key, value) -> this.flightHistory.get(key)
+                            .stream()
+                            .filter(flight -> flight.getAirline().equals(airline))
+                            .forEach(flight -> flights.add(flight.getTakeOffsOrdersQuantity() + ";" + key + ";" + flight.getId() + ";"
+                                    + flight.getDestinyAirport() + ";" + flight.getAirline())));
+
+        }
+        /*try {
             this.flightHistory.values().forEach(flights -> flights.forEach(flight -> {
                 if(flight.getAirline().equals(airline)) {
                     flightsIds.add(flight.getId());
                 }
             }));
-        } finally {
+        } */finally {
             laneLock.readLock().unlock();
         }
 
-        return flightsIds;
+        return flights;
     }
 
     @Override
-    public List<Integer> getTakeoffsForLane(String laneName) throws RemoteException {
-        final List<Integer> flightsIds = new LinkedList<>();
+    public List<String> getTakeoffsForLane(String laneName) throws RemoteException {
+        final List<String> flightsTakeOff = new LinkedList<>();
         laneLock.readLock().lock();
         try {
             Optional.ofNullable(this.flightHistory.get(laneName))
                     .ifPresent(flights -> flights
-                            .forEach(flight -> flightsIds.add(flight.getId())));
+                            .forEach(flight -> flightsTakeOff.add(flight.getTakeOffsOrdersQuantity() + ";" + laneName + ";" + flight.getId() + ";"
+                                    + flight.getDestinyAirport() + ";" + flight.getAirline())));
         } finally {
             laneLock.readLock().unlock();
         }
 
-        return flightsIds;
+        return flightsTakeOff;
     }
 
 

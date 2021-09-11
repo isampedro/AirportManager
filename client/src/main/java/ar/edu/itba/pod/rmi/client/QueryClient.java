@@ -5,7 +5,12 @@ import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsExcepti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.Naming;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueryClient {
     private static String csvOutFile;
@@ -53,15 +58,30 @@ public class QueryClient {
 
         try {
             QueryService queryService = (QueryService) Naming.lookup("//" + address + "/Airport-Service");
+            List<String> takeOffOrders;
             if(airlineName != null) {
-                queryService.getTakeoffsForAirline(airlineName);
+                takeOffOrders = queryService.getTakeoffsForAirline(airlineName);
             } else if(runwayName != null) {
-                queryService.getTakeoffsForLane(airlineName);
+                takeOffOrders = queryService.getTakeoffsForLane(airlineName);
             } else {
-                queryService.getTakeoffsForAirport();
+                takeOffOrders = queryService.getTakeoffsForAirport();
             }
+            writeToCSV(csvOutFile, takeOffOrders);
+
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private static void writeToCSV(String outPath, List<String> results){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(outPath))) {
+                for(int i=0; i < results.size(); i++){
+                    bw.write(results.get(i));
+                    bw.newLine();
+                }
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

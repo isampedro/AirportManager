@@ -57,7 +57,7 @@ public class LaneRequestClient {
         }
     }
 
-        public static ArrayList<Line> parseCsv(String fileName) {
+    private static ArrayList<Line> parseCsv(String fileName) {
         ArrayList<Line> parsedLines = new ArrayList<>();
         String[] lineArgs;
         String line;
