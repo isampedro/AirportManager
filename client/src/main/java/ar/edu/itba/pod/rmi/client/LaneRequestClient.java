@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.rmi.client;
 
+import ar.edu.itba.pod.rmi.AirportExceptions.NoAvailableLaneException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.LaneRequesterService;
 import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
@@ -10,7 +11,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class LaneRequestClient {
@@ -48,13 +52,17 @@ public class LaneRequestClient {
                     requesterService.addFlightToLane(request.flightId, request.destinyAirport,
                             request.airlineName, request.minimumCategory);
                     i++;
-                } catch (Exception e) {
+                } catch (NoAvailableLaneException l) {
                     logger.info("Cannot assign Flight " + request.flightId);
                 }
             }
             logger.info(i + " flights assigned.");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        } catch (RemoteException e) {
+            logger.error("remote message error: {}",e.getMessage());
+        } catch (WrongNumberOfArgumentsException w) {
+            logger.error("arg message error: {}",w.getMessage());
+        } catch (NotBoundException | MalformedURLException ex) {
+            ex.printStackTrace();
         }
     }
 

@@ -8,8 +8,8 @@ public enum ClientsArgsNames {
     AIRLINE ("-Dairline"),
     AIRLINE_NAME ("-DairlineName"),
     FLIGHT_ID ("-DflightCode"),
-    CSV_INPATH ("-inPath"),
-    CSV_OUTPATH ("-outPath");
+    CSV_INPATH ("-DinPath"),
+    CSV_OUTPATH ("-DoutPath");
 
     String argumentName;
 

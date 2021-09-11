@@ -22,7 +22,8 @@ public class FlightTracingClient {
 
         try {
             if (args.length != LIM )
-                throw new WrongNumberOfArgumentsException(LIM);
+                // throw new WrongNumberOfArgumentsException(LIM);
+                logger.info(String.valueOf(args.length));
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
@@ -40,10 +41,11 @@ public class FlightTracingClient {
             }
         } catch(Exception e) {
             logger.error("Illegal argument: {}",e.getMessage());
+            return;
         }
 
         logger.info("argument are correct");
-        Notifications clientNotifier = null;
+        Notifications clientNotifier;
         try {
             logger.info("Getting FlightTracerService");
             final FlightTracingService service = (FlightTracingService) Naming.lookup("//" + address + "/Airport-Service");
