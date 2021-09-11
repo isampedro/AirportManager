@@ -18,14 +18,16 @@ public class QueryClient {
     private static String runwayName = null;
     private static String airlineName = null;
 
+    private final static int LIM_L = 2, LIM_R = 4;
+
     private static final Logger logger = LoggerFactory.getLogger(QueryClient.class);
 
     public static void main(String[] args) {
         logger.info("Query client starting...");
 
         try {
-            if (args.length < 2 || args.length > 4)
-                throw new WrongNumberOfArgumentsException();
+            if (args.length < LIM_L || args.length > LIM_R)
+                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             for (String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];

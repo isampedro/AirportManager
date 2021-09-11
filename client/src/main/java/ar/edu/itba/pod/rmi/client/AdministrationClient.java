@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.rmi.client;
 
+import ar.edu.itba.pod.rmi.AirportExceptions.SameLaneStateException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.AirportOpsService;
 import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
@@ -15,6 +16,7 @@ public class AdministrationClient {
     private static final Logger logger = LoggerFactory.getLogger(AdministrationClient.class);
     private static String address;
     private static ClientsActionNames actionName;
+    private final static int LIM_L = 2, LIM_R = 4;
 
     private static String runwayName = null;
     private static Categories minimumCategory = null;
@@ -23,8 +25,8 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            if (args.length < 2 || args.length > 4)
-                throw new WrongNumberOfArgumentsException();
+            if (args.length < LIM_L || args.length > LIM_R)
+                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
@@ -45,13 +47,10 @@ public class AdministrationClient {
 
             if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)
-                    throw new WrongNumberOfArgumentsException();
-            } else if(!(actionName.equals(ClientsActionNames.TAKE_OFF) || actionName.equals(ClientsActionNames.REORDER))) {
-                if(runwayName == null)
-                    throw new WrongNumberOfArgumentsException();
+                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             } else {
                 if(runwayName != null || minimumCategory != null)
-                    throw new WrongNumberOfArgumentsException();
+                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -68,11 +67,19 @@ public class AdministrationClient {
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case OPEN:
-                    opsService.openLane(runwayName);
+                    try {
+                        opsService.openLane(runwayName);
+                    } catch ( SameLaneStateException e ) {
+                        logger.info(e.getMessage());
+                    }
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case CLOSE:
-                    opsService.closeLane(runwayName);
+                    try {
+                        opsService.closeLane(runwayName);
+                    } catch ( SameLaneStateException e ) {
+                        logger.info(e.getMessage());
+                    }
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case STATUS:

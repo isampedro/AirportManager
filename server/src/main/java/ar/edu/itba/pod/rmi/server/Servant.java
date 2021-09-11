@@ -37,7 +37,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         try {
             for( Integer key : laneMap.keySet() ) {
                 if (laneMap.get(key).stream().anyMatch((lane) -> lane.getName().equals(laneName))) {
-                    throw new LaneNameAlreadyExistsException();
+                    throw new LaneNameAlreadyExistsException(laneName);
                 }
             }
             laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
@@ -70,7 +70,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                     }
                 }
             }
-            throw new LaneNotExistentException();
+            throw new LaneNotExistentException(laneName);
         } finally {
             laneLock.readLock().unlock();
         }
@@ -86,13 +86,13 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                             lane.setState(state);
                             return;
                         } else {
-                            throw new SameLaneStateException();
+                            throw new SameLaneStateException(state.equals(LaneState.OPEN));
                         }
                     }
                 }
             }
 
-            throw new LaneNotExistentException();
+            throw new LaneNotExistentException(laneName);
         } finally {
             laneLock.writeLock().unlock();
         }
@@ -106,7 +106,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
             }
         }
 
-        throw new LaneNotExistentException();
+        throw new LaneNotExistentException(laneName);
     }
 
     public void closeLane( String laneName ) throws SameLaneStateException, LaneNotExistentException {
@@ -117,7 +117,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
             }
         }
 
-        throw new LaneNotExistentException();
+        throw new LaneNotExistentException(laneName);
     }
 
     public List<Integer> emitDeparture() {
@@ -212,7 +212,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                 }
             }
             if (minLane == null)
-                throw new NoAvailableLaneException();
+                throw new NoAvailableLaneException(flightId);
             else {
                 minLane.addNewFlight(flight);
                 notifyAirlines(flight,Events.ASSIGNED,minLane);
@@ -250,7 +250,6 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
     }
 
     //------------------------------------------Query---------------------------------------//
-
 
     @Override
     public List<String> getTakeoffsForAirport() throws RemoteException {
