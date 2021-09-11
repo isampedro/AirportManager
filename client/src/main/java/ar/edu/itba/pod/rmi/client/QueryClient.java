@@ -9,7 +9,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueryClient {
@@ -75,10 +74,10 @@ public class QueryClient {
 
     private static void writeToCSV(String outPath, List<String> results){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(outPath))) {
-                for(int i=0; i < results.size(); i++){
-                    bw.write(results.get(i));
-                    bw.newLine();
-                }
+            for (String result : results) {
+                bw.write(result);
+                bw.newLine();
+            }
             } catch (IOException e) {
             e.printStackTrace();
         }
