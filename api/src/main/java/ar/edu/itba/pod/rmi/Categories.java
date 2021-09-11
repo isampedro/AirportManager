@@ -46,4 +46,25 @@ public enum Categories {
         }
         return authorizationString;
     }
+
+    public static Categories parseString(String s) {
+        Categories category;
+        switch (s) {
+            case "A": category = Categories.A;
+                break;
+            case "B": category = Categories.B;
+                break;
+            case "C": category = Categories.C;
+                break;
+            case "D": category = Categories.D;
+                break;
+            case "E": category = Categories.E;
+                break;
+            case "F": category = Categories.F;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + s);
+        }
+        return category;
+    }
 }
