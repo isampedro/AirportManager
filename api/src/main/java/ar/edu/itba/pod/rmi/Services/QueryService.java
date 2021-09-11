@@ -6,9 +6,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface QueryService extends Remote {
-    List<Integer> getTakeoffsForAirport() throws RemoteException;
+    List<String> getTakeoffsForAirport() throws RemoteException;
 
-    List<Integer> getTakeoffsForAirline(String airline) throws RemoteException;
+    List<String> getTakeoffsForAirline(String airline) throws RemoteException;
 
-    List<Integer> getTakeoffsForLane(String laneName) throws RemoteException;
+    List<String> getTakeoffsForLane(String laneName) throws RemoteException;
 }
