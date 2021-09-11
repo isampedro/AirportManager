@@ -131,11 +131,13 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
                         notifyAirlines(flight,Events.DEPARTURE,lane);
-                        lane.getFlightsList().forEach(f-> {
-                            notifyAirlines(f,Events.ADVANCE, lane);
-                            f.increaseTakeOffsOrdersQuantity();
-                        });
+                        lane.getFlightsList().forEach(f-> notifyAirlines(f,Events.ADVANCE, lane));
                     }
+                }
+            }
+            for( Integer key : laneMap.keySet() ) {
+                for (Lane lane : laneMap.get(key)) {
+                    lane.getFlightsList().forEach(Flight::increaseTakeOffsOrdersQuantity);
                 }
             }
         } finally {
