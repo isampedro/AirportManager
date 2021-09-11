@@ -7,11 +7,22 @@ public class Flight {
     private final Categories category;
     private final String airline;
     private final String destinyAirport;
+    private int takeOffsOrdersQuantity;
+
     public Flight(int id, Categories category, String airline, String destinyAirport) {
         this.id = id;
         this.category = category;
         this.airline = airline;
         this.destinyAirport = destinyAirport;
+        this.takeOffsOrdersQuantity = 0;
+    }
+
+    public void increaseTakeOffsOrdersQuantity() {
+        takeOffsOrdersQuantity++;
+    }
+
+    public int getTakeOffsOrdersQuantity() {
+        return takeOffsOrdersQuantity;
     }
 
     public String getDestinyAirport() {

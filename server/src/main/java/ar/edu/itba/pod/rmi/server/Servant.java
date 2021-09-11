@@ -131,7 +131,10 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
                         notifyAirlines(flight,Events.DEPARTURE,lane);
-                        lane.getFlightsList().forEach(f->notifyAirlines(f,Events.ADVANCE, lane));
+                        lane.getFlightsList().forEach(f-> {
+                            notifyAirlines(f,Events.ADVANCE, lane);
+                            f.increaseTakeOffsOrdersQuantity();
+                        });
                     }
                 }
             }
@@ -244,7 +247,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         try {
             this.flightHistory
                     .forEach((key, value) -> this.flightHistory.get(key)
-                    .forEach(flight -> flights.add(key + ";" + flight.getId() + ";"
+                    .forEach(flight -> flights.add( flight.getTakeOffsOrdersQuantity() + ";" + key + ";" + flight.getId() + ";"
                             + flight.getDestinyAirport() + ";" + flight.getAirline())));
         }
         /* try {
@@ -265,7 +268,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                     .forEach((key, value) -> this.flightHistory.get(key)
                             .stream()
                             .filter(flight -> flight.getAirline().equals(airline))
-                            .forEach(flight -> flights.add(key + ";" + flight.getId() + ";"
+                            .forEach(flight -> flights.add(flight.getTakeOffsOrdersQuantity() + ";" + key + ";" + flight.getId() + ";"
                                     + flight.getDestinyAirport() + ";" + flight.getAirline())));
 
         }
@@ -289,7 +292,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         try {
             Optional.ofNullable(this.flightHistory.get(laneName))
                     .ifPresent(flights -> flights
-                            .forEach(flight -> flightsTakeOff.add(laneName + ";" + flight.getId() + ";"
+                            .forEach(flight -> flightsTakeOff.add(flight.getTakeOffsOrdersQuantity() + ";" + laneName + ";" + flight.getId() + ";"
                                     + flight.getDestinyAirport() + ";" + flight.getAirline())));
         } finally {
             laneLock.readLock().unlock();
