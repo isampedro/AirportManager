@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.rmi.client;
 
+import ar.edu.itba.pod.rmi.AirportExceptions.SameLaneStateException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.AirportOpsService;
 import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
@@ -66,11 +67,19 @@ public class AdministrationClient {
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case OPEN:
-                    opsService.openLane(runwayName);
+                    try {
+                        opsService.openLane(runwayName);
+                    } catch ( SameLaneStateException e ) {
+                        logger.info(e.getMessage());
+                    }
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case CLOSE:
-                    opsService.closeLane(runwayName);
+                    try {
+                        opsService.closeLane(runwayName);
+                    } catch ( SameLaneStateException e ) {
+                        logger.info(e.getMessage());
+                    }
                     logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case STATUS:
