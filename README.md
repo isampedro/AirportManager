@@ -29,8 +29,7 @@ Para correr Cliente de Seguimiento de Vuelo:
 ./run-airline -DserverAddress=xx.xx.xx.xx:yyyy -Dairline=airlineName -DflightCode=flightCode
 
 Para correr Cliente de Solicitud de Pista:
-./run-runway.sh -DserverAddress=xx.xx.xx.xx:yyyy -Did=pollingPlaceNumber -Dparty=partyName
+./run-runway -DserverAddress=xx.xx.xx.xx:yyyy -DinPath=fileName
 
 Para correr Cliente de Consulta:
-./run-query.sh -DserverAddress=xx.xx.xx.xx:yyyy [ -Dstate=stateName | -Did=pollingPlaceNumber ] -DoutPath=​fileName
-```
+./run-query -DserverAddress=xx.xx.xx.xx:yyyy [ -Dairline=airlineName |-Drunway=runwayName ] -DoutPath=fileName```
