@@ -7,19 +7,19 @@ En el directorio root, ejecutar:
 
 ### 1. CORRER REGISTRY:
 Corre en el puerto 1099
-En el directorio server/target/rmi-params-server-1.0-SNAPSHOT-1.0-SNAPSHOT:
+En el directorio server/target/tpe1-g14-server-1.0-SNAPSHOT:
 ```
 ./run-registry.sh
 ```
 
 ### 2. CORRER SERVER:
-En el directorio server/target/rmi-params-server-1.0-SNAPSHOT-1.0-SNAPSHOT:
+En el directorio server/target/tpe1-g14-server-1.0-SNAPSHOT:
 ```
 ./run-server.sh
 ```
 
 ### 3. CORRER CLIENTES:
-En el directorio client/target/rmi-params-client-1.0-SNAPSHOT:
+En el directorio client/target/tpe1-g14-client-1.0-SNAPSHOT:
 
 ```
 Para correr Cliente de Administración:
