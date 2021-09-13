@@ -27,7 +27,7 @@ public class Notification implements Notifications {
     public void notifyEvent(Events event, String destiny, String runway, int flightAhead) throws RemoteException {
         switch (event){
             case ADVANCE:
-                System.out.printf("A flight departed from runway %s.Flight %d with destiny %s has %d flights waiting ahead.\n", runway, this.flight, destiny, flightAhead);
+                System.out.printf("A flight departed from runway %s.Flight %d with destiny %s advanced one place and now has %d flights waiting ahead.\n", runway, this.flight, destiny, flightAhead);
                 break;
             case ASSIGNED:
                 System.out.printf("Flight %d with destiny %s was assigned to runway %s and there are %d flights waiting ahead.\n",this.flight, destiny,runway, flightAhead);
