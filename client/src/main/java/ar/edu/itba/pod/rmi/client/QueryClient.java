@@ -64,7 +64,7 @@ public class QueryClient {
             if(airlineName != null) {
                 takeOffOrders = queryService.getTakeoffsForAirline(airlineName);
             } else if(runwayName != null) {
-                takeOffOrders = queryService.getTakeoffsForLane(airlineName);
+                takeOffOrders = queryService.getTakeoffsForLane(runwayName);
             } else {
                 takeOffOrders = queryService.getTakeoffsForAirport();
             }
