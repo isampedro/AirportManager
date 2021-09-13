@@ -6,6 +6,6 @@ public class WrongNumberOfArgumentsException extends Exception {
     }
 
     public WrongNumberOfArgumentsException( int lim ) {
-        super("Wrong number of arguments provided. Please, provide " + lim + "arguments");
+        super("Wrong number of arguments provided. Please, provide " + lim + " arguments");
     }
 }

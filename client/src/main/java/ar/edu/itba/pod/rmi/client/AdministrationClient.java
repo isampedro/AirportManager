@@ -28,8 +28,9 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            if (args.length < LIM_L || args.length > LIM_R)
+            if (args.length < LIM_L || args.length > LIM_R) {
                 throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+            }
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
@@ -52,7 +53,7 @@ public class AdministrationClient {
                 if(runwayName == null || minimumCategory == null)
                     throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             } else {
-                if(runwayName != null || minimumCategory != null)
+                if(minimumCategory != null)
                     throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             }
         } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
@@ -65,6 +66,7 @@ public class AdministrationClient {
         try {
             logger.info("Getting AirportOpsService");
             final AirportOpsService opsService = (AirportOpsService) Naming.lookup("//" + address + "/Airport-Service");
+            String message = null;
             switch (actionName) {
                 case ADD:
                     opsService.addLane(runwayName, minimumCategory);
@@ -74,17 +76,25 @@ public class AdministrationClient {
                     try {
                         opsService.openLane(runwayName);
                     } catch ( SameLaneStateException e ) {
-                        logger.info(e.getMessage());
+                        message = e.getMessage();
                     }
-                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    if( message == null ) {
+                        logger.info("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    } else {
+                        logger.info(message);
+                    }
                     break;
                 case CLOSE:
                     try {
                         opsService.closeLane(runwayName);
                     } catch ( SameLaneStateException e ) {
-                        logger.info(e.getMessage());
+                        message = e.getMessage();
                     }
-                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    if( message == null ) {
+                        logger.info("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    } else {
+                        logger.info(message);
+                    }
                     break;
                 case STATUS:
                     opsService.isOpen(runwayName);
