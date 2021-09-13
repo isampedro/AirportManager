@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.rmi.client;
 
+import ar.edu.itba.pod.rmi.AirportExceptions.LaneNameAlreadyExistsException;
+import ar.edu.itba.pod.rmi.AirportExceptions.LaneNotExistentException;
 import ar.edu.itba.pod.rmi.AirportExceptions.SameLaneStateException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.AirportOpsService;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -52,11 +55,12 @@ public class AdministrationClient {
                 if(runwayName != null || minimumCategory != null)
                     throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             }
-        } catch (Exception e) {
+        } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
             logger.error(e.getMessage());
+            return;
         }
 
-        logger.info("argument are correct");
+        logger.info("Arguments are correct");
 
         try {
             logger.info("Getting AirportOpsService");
@@ -64,7 +68,7 @@ public class AdministrationClient {
             switch (actionName) {
                 case ADD:
                     opsService.addLane(runwayName, minimumCategory);
-                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case OPEN:
                     try {
@@ -72,7 +76,7 @@ public class AdministrationClient {
                     } catch ( SameLaneStateException e ) {
                         logger.info(e.getMessage());
                     }
-                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case CLOSE:
                     try {
@@ -80,11 +84,11 @@ public class AdministrationClient {
                     } catch ( SameLaneStateException e ) {
                         logger.info(e.getMessage());
                     }
-                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case STATUS:
                     opsService.isOpen(runwayName);
-                    logger.info("runnaway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case TAKE_OFF:
                     logger.info(opsService.emitDeparture().size() + " flights departed");
@@ -94,7 +98,9 @@ public class AdministrationClient {
                     logger.info(reordered.get(true).size() + " flights assigned.");
                     break;
             }
-        } catch (Exception e) {
+        }  catch (LaneNameAlreadyExistsException | LaneNotExistentException e) {
+            logger.error(e.getMessage());
+        } catch ( Exception e ) {
             logger.error(e.getMessage());
         }
     }

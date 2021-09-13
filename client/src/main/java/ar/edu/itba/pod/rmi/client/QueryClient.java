@@ -53,6 +53,7 @@ public class QueryClient {
 
         } catch (WrongNumberOfArgumentsException e) {
             logger.error(e.getMessage());
+            return;
         }
 
         logger.info("argument are correct");

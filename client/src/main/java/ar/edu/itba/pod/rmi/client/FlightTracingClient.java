@@ -22,8 +22,7 @@ public class FlightTracingClient {
 
         try {
             if (args.length != LIM )
-                // throw new WrongNumberOfArgumentsException(LIM);
-                logger.info(String.valueOf(args.length));
+                throw new WrongNumberOfArgumentsException(LIM);
             for(String arg : args) {
                 String[] argument = arg.split("=");
                 String argumentName = argument[0];
@@ -39,6 +38,9 @@ public class FlightTracingClient {
                 }
 
             }
+        } catch(WrongNumberOfArgumentsException e) {
+            logger.error(e.getMessage());
+            return;
         } catch(Exception e) {
             logger.error("Illegal argument: {}",e.getMessage());
             return;
