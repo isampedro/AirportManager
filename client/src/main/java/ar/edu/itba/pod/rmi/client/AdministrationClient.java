@@ -57,7 +57,7 @@ public class AdministrationClient {
                     throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
             }
         } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -70,7 +70,7 @@ public class AdministrationClient {
             switch (actionName) {
                 case ADD:
                     opsService.addLane(runwayName, minimumCategory);
-                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case OPEN:
                     try {
@@ -79,9 +79,9 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        logger.info("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     } else {
-                        logger.info(message);
+                        System.out.println(message);
                     }
                     break;
                 case CLOSE:
@@ -91,25 +91,25 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        logger.info("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     } else {
-                        logger.info(message);
+                        System.out.println(message);
                     }
                     break;
                 case STATUS:
                     opsService.isOpen(runwayName);
-                    logger.info("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case TAKE_OFF:
-                    logger.info(opsService.emitDeparture().size() + " flights departed");
+                    System.out.println(opsService.emitDeparture().size() + " flights departed");
                 case REORDER:
                     Map<Boolean, List<Integer>> reordered = opsService.emitReorder();
-                    reordered.get(false).forEach(flight -> logger.info("Cannot assign Flight " + flight));
-                    logger.info(reordered.get(true).size() + " flights assigned.");
+                    reordered.get(false).forEach(flight -> System.out.println("Cannot assign Flight " + flight));
+                    System.out.println(reordered.get(true).size() + " flights assigned.");
                     break;
             }
         }  catch (LaneNameAlreadyExistsException | LaneNotExistentException e) {
-            logger.error(e.getMessage());
+            System.out.println(e.getMessage());
         } catch ( Exception e ) {
             logger.error(e.getMessage());
         }

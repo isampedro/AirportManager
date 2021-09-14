@@ -53,16 +53,16 @@ public class LaneRequestClient {
                             request.airlineName, request.minimumCategory);
                     i++;
                 } catch (NoAvailableLaneException l) {
-                    logger.info("Cannot assign Flight " + request.flightId);
+                    System.out.println("Cannot assign Flight " + request.flightId);
                 }
             }
-            logger.info(i + " flights assigned.");
+            System.out.println(i + " flights assigned.");
         } catch (RemoteException e) {
-            logger.error("remote message error: {}",e.getMessage());
+            logger.error("Remote message error: {}",e.getMessage());
         } catch (WrongNumberOfArgumentsException w) {
-            logger.error("arg message error: {}",w.getMessage());
+            System.out.println("Arg message error: " + w.getMessage());
         } catch (NotBoundException | MalformedURLException ex) {
-            ex.printStackTrace();
+            System.out.println("There is a problem with the csv path provided");
         }
     }
 
@@ -89,9 +89,9 @@ public class LaneRequestClient {
 
             bufferedReader.close();
         } catch(FileNotFoundException ex) {
-            logger.error("Unable to open file '" + fileName + "'");
+            System.out.println("Unable to open file '" + fileName + "'");
         } catch(IOException ex) {
-            logger.error("Error reading file '" + fileName + "'");
+            System.out.println("Error reading file '" + fileName + "'");
         }
         return parsedLines;
     }

@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class QueryClient {
@@ -51,7 +52,7 @@ public class QueryClient {
             }
 
         } catch (WrongNumberOfArgumentsException e) {
-            logger.error(e.getMessage());
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -68,6 +69,7 @@ public class QueryClient {
                 takeOffOrders = queryService.getTakeoffsForAirport();
             }
             writeToCSV(csvOutFile, takeOffOrders);
+            System.out.println("Query was successful");
 
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -81,7 +83,7 @@ public class QueryClient {
                 bw.newLine();
             }
             } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IOException {} ",e.getMessage());
         }
 
     }

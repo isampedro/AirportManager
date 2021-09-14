@@ -38,10 +38,10 @@ public class FlightTracingClient {
 
             }
         } catch(WrongNumberOfArgumentsException e) {
-            logger.error(e.getMessage());
+            System.out.println(e.getMessage());
             return;
         } catch(Exception e) {
-            logger.error("Illegal argument: {}",e.getMessage());
+            System.out.println("Illegal argument: " + e.getMessage());
             return;
         }
 
@@ -57,10 +57,8 @@ public class FlightTracingClient {
 
             logger.info("Registering Airline");
             service.registerAirline(airline,flightId,clientNotifier);
-            //TODO: check if notification prints in client as it should and not in server?
         }catch ( Exception e){
             logger.error(e.getMessage());
-            //UnicastRemoteObject.unexportObject(clientNotifier,true); we need to do it?
         }
     }
 }
