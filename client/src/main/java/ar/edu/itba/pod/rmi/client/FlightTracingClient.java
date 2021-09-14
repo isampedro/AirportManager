@@ -14,7 +14,7 @@ public class FlightTracingClient {
     private static String address;
     private static String airline;
     private static int flightId;
-    private static int LIM = 3;
+    private static final int LIM = 3;
 
 
     public static void main(String[] args) {
