@@ -30,8 +30,7 @@ public class FlightTracingClient {
 
                 if(argumentName.equals(ClientsArgsNames.SERVER_ADDRESS.getArgumentName())) {
                     address = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName()) ||
-                        argumentName.equals(ClientsArgsNames.AIRLINE_NAME.getArgumentName())) {
+                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName())) {
                     airline = argumentValue;
                 } else if(argumentName.equals(ClientsArgsNames.FLIGHT_ID.getArgumentName())) {
                     flightId = Integer.parseInt(argumentValue);

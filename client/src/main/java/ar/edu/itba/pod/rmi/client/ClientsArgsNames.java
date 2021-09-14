@@ -6,7 +6,6 @@ public enum ClientsArgsNames {
     CATEGORY_NAME ("-Dcategory"),
     LANE_NAME ("-Drunway"),
     AIRLINE ("-Dairline"),
-    AIRLINE_NAME ("-DairlineName"),
     FLIGHT_ID ("-DflightCode"),
     CSV_INPATH ("-DinPath"),
     CSV_OUTPATH ("-DoutPath");

@@ -39,8 +39,7 @@ public class QueryClient {
                     csvOutFile = argumentValue;
                 } else if(argumentName.equals(ClientsArgsNames.LANE_NAME.getArgumentName())) {
                     runwayName = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName()) ||
-                        argumentName.equals(ClientsArgsNames.AIRLINE_NAME.getArgumentName())) {
+                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName())) {
                     airlineName = argumentValue;
                 } else {
                     throw new IllegalArgumentException();
