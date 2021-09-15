@@ -97,7 +97,6 @@ public class AdministrationClient {
                     }
                     break;
                 case STATUS:
-                    opsService.isOpen(runwayName);
                     System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     break;
                 case TAKE_OFF:
