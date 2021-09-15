@@ -27,10 +27,10 @@ public class QueryClient {
         logger.info("Query client starting...");
 
         try {
-            address = ArgumentParser.parseArgument(args, ClientsArgsNames.SERVER_ADDRESS);
-            csvOutFile = ArgumentParser.parseArgument(args, ClientsArgsNames.CSV_OUTPATH);
-            runwayName = ArgumentParser.parseArgument(args, ClientsArgsNames.LANE_NAME);
-            airlineName = ArgumentParser.parseArgument(args, ClientsArgsNames.AIRLINE);
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
+            csvOutFile = System.getProperty(ClientsArgsNames.CSV_OUTPATH.getArgumentName());
+            runwayName = System.getProperty(ClientsArgsNames.LANE_NAME.getArgumentName());
+            airlineName = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
 
             if(runwayName != null && airlineName != null) {
                 throw new IllegalArgumentException();

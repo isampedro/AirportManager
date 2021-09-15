@@ -21,9 +21,9 @@ public class FlightTracingClient {
         logger.info("Flight tracing client starting...");
 
         try {
-            address = ArgumentParser.parseArgument(args, ClientsArgsNames.SERVER_ADDRESS);
-            airline = ArgumentParser.parseArgument(args, ClientsArgsNames.AIRLINE);
-            flightId = Integer.parseInt(ArgumentParser.parseArgument(args, ClientsArgsNames.FLIGHT_ID));
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
+            airline = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
+            flightId = Integer.parseInt(System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName()));
         } catch(Exception e) {
             System.out.println("Illegal argument: " + e.getMessage());
             return;

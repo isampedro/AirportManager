@@ -28,8 +28,8 @@ public class LaneRequestClient {
         logger.info("Lane request client starting...");
 
         try {
-            csvInFileName = ArgumentParser.parseArgument(args, ClientsArgsNames.CSV_INPATH);
-            address = ArgumentParser.parseArgument(args, ClientsArgsNames.SERVER_ADDRESS);
+            csvInFileName = System.getProperty(ClientsArgsNames.CSV_INPATH.getArgumentName());
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
 
             ArrayList<Line> requests = parseCsv(csvInFileName);
             LaneRequesterService requesterService = (LaneRequesterService) Naming.lookup("//" + address + "/Airport-Service");

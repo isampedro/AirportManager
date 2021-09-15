@@ -28,10 +28,22 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            address = ArgumentParser.parseArgument(args, ClientsArgsNames.SERVER_ADDRESS);
-            actionName = ClientsActionNames.parseAction(ArgumentParser.parseArgument(args, ClientsArgsNames.ACTION_NAME));
-            runwayName = ArgumentParser.parseArgument(args, ClientsArgsNames.LANE_NAME);
-            minimumCategory = Categories.parseString(ArgumentParser.parseArgument(args, ClientsArgsNames.CATEGORY_NAME));
+            minimumCategory = Categories.parseString(
+                    System.getProperty(
+                            ClientsArgsNames.CATEGORY_NAME.getArgumentName()
+                    )
+            );
+            address = System.getProperty(
+                                            ClientsArgsNames.SERVER_ADDRESS.getArgumentName()
+            );
+            runwayName = System.getProperty(
+                    ClientsArgsNames.LANE_NAME.getArgumentName()
+            );
+            actionName = ClientsActionNames.parseAction(
+                                                            System.getProperty(
+                                                                                ClientsArgsNames.ACTION_NAME.getArgumentName()
+                                                            )
+            );
 
             if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)

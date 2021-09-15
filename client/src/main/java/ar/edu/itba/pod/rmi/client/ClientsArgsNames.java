@@ -1,14 +1,14 @@
 package ar.edu.itba.pod.rmi.client;
 
 public enum ClientsArgsNames {
-    SERVER_ADDRESS ("-DserverAddress"),
-    ACTION_NAME ("-Daction"),
-    CATEGORY_NAME ("-Dcategory"),
-    LANE_NAME ("-Drunway"),
-    AIRLINE ("-Dairline"),
-    FLIGHT_ID ("-DflightCode"),
-    CSV_INPATH ("-DinPath"),
-    CSV_OUTPATH ("-DoutPath");
+    SERVER_ADDRESS ("serverAddress"),
+    ACTION_NAME ("action"),
+    CATEGORY_NAME ("category"),
+    LANE_NAME ("runway"),
+    AIRLINE ("airline"),
+    FLIGHT_ID ("flightCode"),
+    CSV_INPATH ("inPath"),
+    CSV_OUTPATH ("outPath");
 
     String argumentName;
 
