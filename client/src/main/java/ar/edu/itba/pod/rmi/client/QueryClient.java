@@ -27,31 +27,16 @@ public class QueryClient {
         logger.info("Query client starting...");
 
         try {
-            if (args.length < LIM_L || args.length > LIM_R)
-                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
-            for (String arg : args) {
-                String[] argument = arg.split("=");
-                String argumentName = argument[0];
-                String argumentValue = argument[1];
-
-                if(argumentName.equals(ClientsArgsNames.SERVER_ADDRESS.getArgumentName())) {
-                    address = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.CSV_OUTPATH.getArgumentName())) {
-                    csvOutFile = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.LANE_NAME.getArgumentName())) {
-                    runwayName = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName())) {
-                    airlineName = argumentValue;
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            }
+            address = ArgumentParser.parseArgument(args, ClientsArgsNames.SERVER_ADDRESS);
+            csvOutFile = ArgumentParser.parseArgument(args, ClientsArgsNames.CSV_OUTPATH);
+            runwayName = ArgumentParser.parseArgument(args, ClientsArgsNames.LANE_NAME);
+            airlineName = ArgumentParser.parseArgument(args, ClientsArgsNames.AIRLINE);
 
             if(runwayName != null && airlineName != null) {
                 throw new IllegalArgumentException();
             }
 
-        } catch (WrongNumberOfArgumentsException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
         }
