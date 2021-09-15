@@ -21,25 +21,9 @@ public class FlightTracingClient {
         logger.info("Flight tracing client starting...");
 
         try {
-            if (args.length != LIM )
-                throw new WrongNumberOfArgumentsException(LIM);
-            for(String arg : args) {
-                String[] argument = arg.split("=");
-                String argumentName = argument[0];
-                String argumentValue = argument[1];
-
-                if(argumentName.equals(ClientsArgsNames.SERVER_ADDRESS.getArgumentName())) {
-                    address = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.AIRLINE.getArgumentName())) {
-                    airline = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.FLIGHT_ID.getArgumentName())) {
-                    flightId = Integer.parseInt(argumentValue);
-                }
-
-            }
-        } catch(WrongNumberOfArgumentsException e) {
-            System.out.println(e.getMessage());
-            return;
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
+            airline = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
+            flightId = Integer.parseInt(System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName()));
         } catch(Exception e) {
             System.out.println("Illegal argument: " + e.getMessage());
             return;

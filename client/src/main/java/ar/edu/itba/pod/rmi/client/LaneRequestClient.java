@@ -28,21 +28,8 @@ public class LaneRequestClient {
         logger.info("Lane request client starting...");
 
         try {
-            if (args.length != LIM)
-                throw new WrongNumberOfArgumentsException(LIM);
-            for (String arg : args) {
-                String[] argument = arg.split("=");
-                String argumentName = argument[0];
-                String argumentValue = argument[1];
-
-                if(argumentName.equals(ClientsArgsNames.CSV_INPATH.getArgumentName())) {
-                    csvInFileName = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.SERVER_ADDRESS.getArgumentName())) {
-                    address = argumentValue;
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            }
+            csvInFileName = System.getProperty(ClientsArgsNames.CSV_INPATH.getArgumentName());
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
 
             ArrayList<Line> requests = parseCsv(csvInFileName);
             LaneRequesterService requesterService = (LaneRequesterService) Naming.lookup("//" + address + "/Airport-Service");
@@ -59,8 +46,6 @@ public class LaneRequestClient {
             System.out.println(i + " flights assigned.");
         } catch (RemoteException e) {
             logger.error("Remote message error: {}",e.getMessage());
-        } catch (WrongNumberOfArgumentsException w) {
-            System.out.println("Arg message error: " + w.getMessage());
         } catch (NotBoundException | MalformedURLException ex) {
             System.out.println("There is a problem with the csv path provided");
         }

@@ -18,7 +18,7 @@ public enum ClientsActionNames {
         return argumentName;
     }
 
-    public static ClientsActionNames parseArgument(String arg) {
+    public static ClientsActionNames parseAction(String arg) {
         ClientsActionNames action;
         switch (arg) {
             case "add": action = ADD;

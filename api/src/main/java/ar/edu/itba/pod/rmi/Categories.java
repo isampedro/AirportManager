@@ -48,6 +48,9 @@ public enum Categories {
     }
 
     public static Categories parseString(String s) {
+        if( s == null ) {
+            return null;
+        }
         Categories category;
         switch (s) {
             case "A": category = Categories.A;

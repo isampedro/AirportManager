@@ -28,26 +28,22 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            if (args.length < LIM_L || args.length > LIM_R) {
-                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
-            }
-            for(String arg : args) {
-                String[] argument = arg.split("=");
-                String argumentName = argument[0];
-                String argumentValue = argument[1];
-
-                if(argumentName.equals(ClientsArgsNames.SERVER_ADDRESS.getArgumentName())) {
-                    address = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.ACTION_NAME.getArgumentName())) {
-                    actionName = ClientsActionNames.parseArgument(argumentValue);
-                } else if(argumentName.equals(ClientsArgsNames.LANE_NAME.getArgumentName())) {
-                    runwayName = argumentValue;
-                } else if(argumentName.equals(ClientsArgsNames.CATEGORY_NAME.getArgumentName())) {
-                    minimumCategory = Categories.parseString(argumentValue);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            }
+            minimumCategory = Categories.parseString(
+                    System.getProperty(
+                            ClientsArgsNames.CATEGORY_NAME.getArgumentName()
+                    )
+            );
+            address = System.getProperty(
+                                            ClientsArgsNames.SERVER_ADDRESS.getArgumentName()
+            );
+            runwayName = System.getProperty(
+                    ClientsArgsNames.LANE_NAME.getArgumentName()
+            );
+            actionName = ClientsActionNames.parseAction(
+                                                            System.getProperty(
+                                                                                ClientsArgsNames.ACTION_NAME.getArgumentName()
+                                                            )
+            );
 
             if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)
