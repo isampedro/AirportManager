@@ -69,6 +69,7 @@ public class QueryClient {
     }
 
     private static void writeToCSV(String outPath, List<String> results){
+        results.add(0, "TakeOffOrders;RunwayName;FlightCode;DestinyAirport;AirlineName");
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(outPath))) {
             for (String result : results) {
                 bw.write(result);
