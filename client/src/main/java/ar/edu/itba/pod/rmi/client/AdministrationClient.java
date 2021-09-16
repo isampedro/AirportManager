@@ -28,29 +28,33 @@ public class AdministrationClient {
         logger.info("Admin client starting...");
 
         try {
-            minimumCategory = Categories.parseString(
-                    System.getProperty(
-                            ClientsArgsNames.CATEGORY_NAME.getArgumentName()
-                    )
+            minimumCategory = Categories.parseString(System.getProperty(
+                            ClientsArgsNames.CATEGORY_NAME.getArgumentName()));
+            address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
+            runwayName = System.getProperty(ClientsArgsNames.LANE_NAME.getArgumentName());
+            actionName = ClientsActionNames.parseAction(System.getProperty(
+                    ClientsArgsNames.ACTION_NAME.getArgumentName())
             );
-            address = System.getProperty(
-                                            ClientsArgsNames.SERVER_ADDRESS.getArgumentName()
-            );
-            runwayName = System.getProperty(
-                    ClientsArgsNames.LANE_NAME.getArgumentName()
-            );
-            actionName = ClientsActionNames.parseAction(
-                                                            System.getProperty(
-                                                                                ClientsArgsNames.ACTION_NAME.getArgumentName()
-                                                            )
-            );
+
+            if(address == null || actionName == null) {
+                throw new IllegalArgumentException("address and out file must be specified");
+            }
+
+            if(System.getProperties().size() < LIM_L || System.getProperties().size() > LIM_R) {
+                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+            }
 
             if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)
-                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+                    throw new IllegalArgumentException("add must specify runway and category");
             } else {
                 if(minimumCategory != null)
-                    throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+                    throw new IllegalArgumentException("action does not receive minimum category");
+                if(actionName.equals(ClientsActionNames.TAKE_OFF) ||
+                        actionName.equals(ClientsActionNames.REORDER)) {
+                    if(runwayName != null)
+                        throw new IllegalArgumentException("action does not receive runway");
+                }
             }
         } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
             System.out.println(e.getMessage());

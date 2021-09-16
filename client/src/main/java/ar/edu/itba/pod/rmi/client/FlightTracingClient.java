@@ -24,6 +24,11 @@ public class FlightTracingClient {
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
             airline = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
             flightId = Integer.parseInt(System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName()));
+
+            if(System.getProperties().size() != LIM) {
+                throw new WrongNumberOfArgumentsException(LIM);
+            }
+            
         } catch(Exception e) {
             System.out.println("Illegal argument: " + e.getMessage());
             return;

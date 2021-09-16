@@ -1,8 +1,11 @@
 admin
-./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=add -Drunway=Carlos -Dcategory=C
-./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=status -Drunway=Carlos
-./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=close -Drunway=Carlos
-./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=open -Drunway=Carlos
+./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=add -Drunway=R1 -Dcategory=F
+ ./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=add -Drunway=R2 -Dcategory=B
+
+./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=status -Drunway=R1
+./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=close -Drunway=R1
+./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=open -Drunway=R1
+
 ./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=takeOff
 ./run-management.sh -DserverAddress=127.0.0.1:1099 -Daction=reorder
 
@@ -14,4 +17,4 @@ seguimiento
 ./run-airline.sh -DserverAddress=127.0.0.1:1099 -DflightCode=5380 -Dairline=AirCanada
 
 query
-./run-query -DserverAddress=127.0.0.1:1099 -Dairline=pod -Drunway=Carlos -DoutPath=/home/abossi/Desktop/clases/POD/AirportManager/vuelos.csv
+./run-query -DserverAddress=127.0.0.1:1099 -Dairline=pod -Drunway=R1 -DoutPath=/home/abossi/Desktop/clases/POD/AirportManager/vuelos.csv

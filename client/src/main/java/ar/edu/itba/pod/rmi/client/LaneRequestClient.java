@@ -31,6 +31,15 @@ public class LaneRequestClient {
             csvInFileName = System.getProperty(ClientsArgsNames.CSV_INPATH.getArgumentName());
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
 
+            if(address == null || csvInFileName == null) {
+                throw new IllegalArgumentException("address and in file must be specified");
+            }
+
+            if(System.getProperties().size() != LIM) {
+                throw new WrongNumberOfArgumentsException(LIM);
+            }
+
+
             ArrayList<Line> requests = parseCsv(csvInFileName);
             LaneRequesterService requesterService = (LaneRequesterService) Naming.lookup("//" + address + "/Airport-Service");
             int i = 0;
@@ -48,6 +57,8 @@ public class LaneRequestClient {
             logger.error("Remote message error: {}",e.getMessage());
         } catch (NotBoundException | MalformedURLException ex) {
             System.out.println("There is a problem with the csv path provided");
+        } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 

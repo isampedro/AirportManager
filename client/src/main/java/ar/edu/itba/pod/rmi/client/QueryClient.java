@@ -32,6 +32,14 @@ public class QueryClient {
             runwayName = System.getProperty(ClientsArgsNames.LANE_NAME.getArgumentName());
             airlineName = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
 
+            if(System.getProperties().size() < LIM_L || System.getProperties().size() > LIM_R) {
+                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+            }
+
+            if(csvOutFile == null || address == null) {
+                throw new IllegalArgumentException("address and out file must be specified");
+            }
+
             if(runwayName != null && airlineName != null) {
                 throw new IllegalArgumentException();
             }

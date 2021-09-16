@@ -1,10 +1,10 @@
 FlightCode;DestinyAirport;AirlineName;MinimumCategory
 5382;SCL;AirCanada;F
-926;COR;Aerolíneas Argentinas;C
-927;COR;Aerolíneas Argentinas;D
+926;COR;AerolíneasArgentinas;C
+927;COR;AerolíneasArgentinas;D
 5383;SCC;AirCanada;F
-928;CAR;Aerolíneas Argentinas;C
-929;CLR;Aerolíneas Chile;F
-5380;RCL;Air Canada;A
-920;BAR;Aerolíneas Argentinas;B
-911;USH;Aerolíneas Argentinas;E
+928;CAR;AerolíneasArgentinas;C
+929;CLR;AerolíneasChile;F
+5380;RCL;AirCanada;A
+920;BAR;AerolíneasArgentinas;B
+911;USH;AerolíneasArgentinas;E
