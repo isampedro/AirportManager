@@ -77,7 +77,7 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        System.out.println("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     } else {
                         System.out.println(message);
                     }
