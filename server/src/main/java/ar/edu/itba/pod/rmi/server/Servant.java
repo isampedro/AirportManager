@@ -128,24 +128,27 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
     }
 
     public List<Integer> emitDeparture() {
-        Flight flight;
+        Flight flight = null;
+        Lane flightLane = null;
+
         final List<Integer> departed = new LinkedList<>();
+        final Map<Lane, List<Flight>> flightsNotification = new HashMap<>();
         laneLock.writeLock().lock();
         try {
-            for( Integer key : laneMap.keySet() ) {
-                for( Lane lane : laneMap.get(key) ) {
-                    if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
+            for (Integer key : laneMap.keySet()) {
+                for (Lane lane : laneMap.get(key)) {
+                    if (lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN)) {
                         flight = lane.departFlight();
+                        flightLane = lane;
                         departed.add(flight.getId());
-                        logger.info("Flight {} departed in lane {}",flight.getId(), lane.getName());
+                        logger.info("Flight {} departed in lane {}", flight.getId(), lane.getName());
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
-                        notifyAirlines(flight,Events.DEPARTURE,lane);
-                        lane.getFlightsList().forEach(f-> notifyAirlines(f,Events.ADVANCE, lane));
+                        flightsNotification.put(lane, lane.getFlightsList());
                     }
                 }
             }
-            for( Integer key : laneMap.keySet() ) {
+            for (Integer key : laneMap.keySet()) {
                 for (Lane lane : laneMap.get(key)) {
                     lane.getFlightsList().forEach(Flight::increaseTakeOffsOrdersQuantity);
                 }
@@ -153,6 +156,13 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         } finally {
             laneLock.writeLock().unlock();
         }
+
+        if (flight != null && flightLane != null) {
+            notifyAirlines(flight, Events.DEPARTURE, flightLane);
+        }
+
+        flightsNotification.keySet().forEach(key -> flightsNotification.get(key).forEach(f -> notifyAirlines(f, Events.ADVANCE, key)));
+
         return departed;
     }
 
@@ -223,13 +233,13 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                 throw new NoAvailableLaneException(flightId);
             else {
                 minLane.addNewFlight(flight);
-                notifyAirlines(flight,Events.ASSIGNED,minLane);
                 logger.info("Flight {} added to lane {}",flight.getId(),minLane.getName());
                 sortLanes();
             }
         } finally {
             laneLock.writeLock().unlock();
         }
+        notifyAirlines(flight,Events.ASSIGNED,minLane);
     }
 
     //------------------------------------------Flight Tracer---------------------------------------//
@@ -248,7 +258,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
     private void notifyAirlines(Flight flight, Events event, Lane lane) {
         if(!registeredAirlines.containsKey(flight.getAirline()))
             return;
-        registeredAirlines.get(flight.getAirline()).get(flight.getId()).forEach(handler->{
+        registeredAirlines.getOrDefault(flight.getAirline(), new HashMap<>()).getOrDefault(flight.getId(), new ArrayList<>()).forEach(handler->{
            try {
                if (event.equals(Events.DEPARTURE))
                    handler.notifyEvent(event, flight.getDestinyAirport(), lane.getName(), 0);

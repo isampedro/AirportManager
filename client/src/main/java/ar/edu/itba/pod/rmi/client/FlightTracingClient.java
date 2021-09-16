@@ -27,7 +27,7 @@ public class FlightTracingClient {
                 throw new IllegalArgumentException("Address,out file and flight ID must be specified.");
             }
 
-            flightId = Integer.parseInt(System.getProperty(flightIdString));
+            flightId = Integer.parseInt(flightIdString);
 
         } catch ( NumberFormatException e ) {
             System.out.println("flightID must be a number.");
