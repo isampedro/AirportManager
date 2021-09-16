@@ -31,11 +31,11 @@ public class QueryClient {
             airlineName = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
 
             if(csvOutFile == null || address == null) {
-                throw new IllegalArgumentException("Address and out file must be specified");
+                throw new IllegalArgumentException("Address and out file must be specified.");
             }
 
             if(runwayName != null && airlineName != null) {
-                throw new IllegalArgumentException("That's not a valid query");
+                throw new IllegalArgumentException("That's not a valid query.");
             }
 
         } catch (IllegalArgumentException e) {
@@ -56,11 +56,11 @@ public class QueryClient {
                 takeOffOrders = queryService.getTakeoffsForAirport();
             }
             System.out.println(takeOffOrders);
-            System.out.println("Query was successful");
+            System.out.println("Query was successful.");
             if( !takeOffOrders.isEmpty() ) {
                 writeToCSV(csvOutFile, takeOffOrders);
             } else {
-                System.out.println("There are no departures for this query");
+                System.out.println("There are no departures for this query.");
             }
 
         } catch (Exception e) {

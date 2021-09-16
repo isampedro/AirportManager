@@ -22,9 +22,16 @@ public class FlightTracingClient {
         try {
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
             airline = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
-            flightId = Integer.parseInt(System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName()));
-            
-        } catch(Exception e) {
+            String flightIdString = System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName());
+            if(address == null || airline == null || flightIdString == null) {
+                throw new IllegalArgumentException("Address,out file and flight ID must be specified.");
+            }
+
+            flightId = Integer.parseInt(System.getProperty(flightIdString));
+
+        } catch ( NumberFormatException e ) {
+            System.out.println("flightID must be a number.");
+        } catch(IllegalArgumentException e) {
             System.out.println("Illegal argument: " + e.getMessage());
             return;
         }

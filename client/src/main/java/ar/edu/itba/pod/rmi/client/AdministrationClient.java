@@ -35,12 +35,18 @@ public class AdministrationClient {
             );
 
             if(address == null || actionName == null) {
-                throw new IllegalArgumentException("Address and out file must be specified");
+                throw new IllegalArgumentException("Address and out file must be specified.");
+            }
+
+            if( !(actionName.equals(ClientsActionNames.TAKE_OFF) || actionName.equals(ClientsActionNames.REORDER))) {
+                if( runwayName == null ) {
+                    throw new IllegalArgumentException("Action must specify a runway.");
+                }
             }
 
             if(actionName.equals(ClientsActionNames.ADD)) {
-                if(runwayName == null || minimumCategory == null)
-                    throw new IllegalArgumentException("add must specify runway and category");
+                if(minimumCategory == null)
+                    throw new IllegalArgumentException("Add must specify a category.");
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

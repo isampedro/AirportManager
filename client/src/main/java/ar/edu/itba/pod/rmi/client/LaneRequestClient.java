@@ -31,7 +31,7 @@ public class LaneRequestClient {
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
 
             if(address == null || csvInFileName == null) {
-                throw new IllegalArgumentException("Address and in file must be specified");
+                throw new IllegalArgumentException("Address and in file must be specified.");
             }
 
 
@@ -44,14 +44,14 @@ public class LaneRequestClient {
                             request.airlineName, request.minimumCategory);
                     i++;
                 } catch (NoAvailableLaneException l) {
-                    System.out.println("Cannot assign Flight " + request.flightId);
+                    System.out.println("Cannot assign Flight " + request.flightId + ".");
                 }
             }
             System.out.println(i + " flights assigned.");
         } catch (RemoteException e) {
             logger.error("Remote message error: {}",e.getMessage());
         } catch (NotBoundException | MalformedURLException ex) {
-            System.out.println("There is a problem with the csv path provided");
+            System.out.println("There is a problem with the csv path provided.");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -80,9 +80,9 @@ public class LaneRequestClient {
 
             bufferedReader.close();
         } catch(FileNotFoundException ex) {
-            System.out.println("Unable to open file '" + fileName + "'");
+            System.out.println("Unable to open file '" + fileName + ".");
         } catch(IOException ex) {
-            System.out.println("Error reading file '" + fileName + "'");
+            System.out.println("Error reading file '" + fileName + ".");
         }
         return parsedLines;
     }
