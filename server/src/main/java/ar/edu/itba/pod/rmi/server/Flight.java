@@ -45,6 +45,7 @@ public class Flight {
     public String toString() {
         return "Flight " + id +
                 ", of category " + category +
-                ", from the Airline " + airline;
+                ", from the Airline " + airline +
+                ", takeOffs " + takeOffsOrdersQuantity;
     }
 }

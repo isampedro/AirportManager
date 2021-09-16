@@ -87,6 +87,7 @@ public class AdministrationClient {
                     break;
                 case TAKE_OFF:
                     System.out.println(opsService.emitDeparture().size() + " flights departed");
+                    break;
                 case REORDER:
                     Map<Boolean, List<Integer>> reordered = opsService.emitReorder();
                     reordered.get(false).forEach(flight -> System.out.println("Cannot assign Flight " + flight));
