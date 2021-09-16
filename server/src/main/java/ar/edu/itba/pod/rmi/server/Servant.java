@@ -7,6 +7,8 @@ import ar.edu.itba.pod.rmi.Services.FlightTracingService;
 import ar.edu.itba.pod.rmi.Services.LaneRequesterService;
 import ar.edu.itba.pod.rmi.Services.QueryService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -19,6 +21,8 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
     private final Map<Integer, List<Lane>> laneMap;
     private final Map<String, List<Flight>> flightHistory;
     private final Map<String,Map<Integer,ArrayList<Notifications>>> registeredAirlines;
+    private final static Logger logger = LoggerFactory.getLogger(Servant.class);
+
 
     public Servant() {
         this.laneMap = new HashMap<>();
@@ -41,6 +45,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                 }
             }
             laneMap.get(category.getAuthorization()).add( new Lane(laneName, category));
+            logger.info("Added lane: {}",laneName);
             sortLanes();
         } finally {
             laneLock.writeLock().unlock();
@@ -102,6 +107,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         for( Integer key : laneMap.keySet() ) {
             if( laneMap.get(key).stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
                 setLaneState( laneName, LaneState.OPEN );
+                logger.info("Opened lane {}",laneName);
                 return;
             }
         }
@@ -113,6 +119,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         for( Integer key : laneMap.keySet() ) {
             if( laneMap.get(key).stream().anyMatch( (lane) -> lane.getName().equals(laneName))) {
                 setLaneState( laneName, LaneState.CLOSED );
+                logger.info("Closed lane {}",laneName);
                 return;
             }
         }
@@ -130,6 +137,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                     if( lane.flightsAreAwaiting() && lane.getState().equals(LaneState.OPEN) ){
                         flight = lane.departFlight();
                         departed.add(flight.getId());
+                        logger.info("Flight {} departed in lane {}",flight.getId(), lane.getName());
                         flightHistory.putIfAbsent(lane.getName(), new ArrayList<>());
                         flightHistory.get(lane.getName()).add(flight);
                         notifyAirlines(flight,Events.DEPARTURE,lane);
@@ -216,6 +224,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
             else {
                 minLane.addNewFlight(flight);
                 notifyAirlines(flight,Events.ASSIGNED,minLane);
+                logger.info("Flight {} added to lane {}",flight.getId(),minLane.getName());
                 sortLanes();
             }
         } finally {
@@ -230,6 +239,9 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         registeredAirlines.putIfAbsent(airline,new HashMap<>());
         registeredAirlines.get(airline).putIfAbsent(flightId,new ArrayList<>());
         registeredAirlines.get(airline).get(flightId).add(handler);
+
+        logger.info("Added airline: {}",airline);
+        logger.info(registeredAirlines.keySet().toString());
 
     }
 
@@ -261,10 +273,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                     .forEach(flight -> flights.add( flight.getTakeOffsOrdersQuantity() + ";" + key + ";" + flight.getId() + ";"
                             + flight.getDestinyAirport() + ";" + flight.getAirline())));
         }
-        /* try {
-            this.flightHistory.values().forEach(flights -> flights
-                    .forEach(flight -> flightsIds.add(flight.getId())));
-        }  */finally {
+        finally {
             laneLock.readLock().unlock();
         }
         return flights;
@@ -283,13 +292,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
                                     + flight.getDestinyAirport() + ";" + flight.getAirline())));
 
         }
-        /*try {
-            this.flightHistory.values().forEach(flights -> flights.forEach(flight -> {
-                if(flight.getAirline().equals(airline)) {
-                    flightsIds.add(flight.getId());
-                }
-            }));
-        } */finally {
+        finally {
             laneLock.readLock().unlock();
         }
 
