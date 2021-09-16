@@ -104,6 +104,7 @@ public class AdministrationClient {
             System.out.println(e.getMessage());
         } catch ( Exception e ) {
             logger.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
