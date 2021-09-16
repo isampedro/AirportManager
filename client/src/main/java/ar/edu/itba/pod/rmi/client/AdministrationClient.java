@@ -56,7 +56,7 @@ public class AdministrationClient {
             switch (actionName) {
                 case ADD:
                     opsService.addLane(runwayName, minimumCategory);
-                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open." : "closed."));
                     break;
                 case OPEN:
                     try {
@@ -65,7 +65,7 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open." : "closed."));
                     } else {
                         System.out.println(message);
                     }
@@ -77,16 +77,16 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open." : "closed."));
                     } else {
                         System.out.println(message);
                     }
                     break;
                 case STATUS:
-                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                    System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open." : "closed."));
                     break;
                 case TAKE_OFF:
-                    System.out.println(opsService.emitDeparture().size() + " flights departed");
+                    System.out.println(opsService.emitDeparture().size() + " flights departed.");
                     break;
                 case REORDER:
                     Map<Boolean, List<Integer>> reordered = opsService.emitReorder();
