@@ -3,7 +3,6 @@ package ar.edu.itba.pod.rmi.client;
 import ar.edu.itba.pod.rmi.AirportExceptions.NoAvailableLaneException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.LaneRequesterService;
-import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +31,7 @@ public class LaneRequestClient {
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
 
             if(address == null || csvInFileName == null) {
-                throw new IllegalArgumentException("address and in file must be specified");
-            }
-
-            if(System.getProperties().size() != LIM) {
-                throw new WrongNumberOfArgumentsException(LIM);
+                throw new IllegalArgumentException("Address and in file must be specified");
             }
 
 
@@ -57,7 +52,7 @@ public class LaneRequestClient {
             logger.error("Remote message error: {}",e.getMessage());
         } catch (NotBoundException | MalformedURLException ex) {
             System.out.println("There is a problem with the csv path provided");
-        } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }

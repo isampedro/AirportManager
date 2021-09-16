@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.rmi.client;
 
 import ar.edu.itba.pod.rmi.Services.QueryService;
-import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class QueryClient {
@@ -32,24 +30,20 @@ public class QueryClient {
             runwayName = System.getProperty(ClientsArgsNames.LANE_NAME.getArgumentName());
             airlineName = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
 
-            if(System.getProperties().size() < LIM_L || System.getProperties().size() > LIM_R) {
-                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
-            }
-
             if(csvOutFile == null || address == null) {
-                throw new IllegalArgumentException("address and out file must be specified");
+                throw new IllegalArgumentException("Address and out file must be specified");
             }
 
             if(runwayName != null && airlineName != null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("That's not a valid query");
             }
 
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return;
         }
 
-        logger.info("argument are correct");
+        logger.info("Arguments are correct");
 
         try {
             QueryService queryService = (QueryService) Naming.lookup("//" + address + "/Airport-Service");
@@ -61,8 +55,13 @@ public class QueryClient {
             } else {
                 takeOffOrders = queryService.getTakeoffsForAirport();
             }
-            writeToCSV(csvOutFile, takeOffOrders);
+            System.out.println(takeOffOrders);
             System.out.println("Query was successful");
+            if( !takeOffOrders.isEmpty() ) {
+                writeToCSV(csvOutFile, takeOffOrders);
+            } else {
+                System.out.println("There are no departures for this query");
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage());

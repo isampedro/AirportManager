@@ -2,7 +2,6 @@ package ar.edu.itba.pod.rmi.client;
 
 import ar.edu.itba.pod.rmi.Notifications;
 import ar.edu.itba.pod.rmi.Services.FlightTracingService;
-import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,17 +23,13 @@ public class FlightTracingClient {
             address = System.getProperty(ClientsArgsNames.SERVER_ADDRESS.getArgumentName());
             airline = System.getProperty(ClientsArgsNames.AIRLINE.getArgumentName());
             flightId = Integer.parseInt(System.getProperty(ClientsArgsNames.FLIGHT_ID.getArgumentName()));
-
-            if(System.getProperties().size() != LIM) {
-                throw new WrongNumberOfArgumentsException(LIM);
-            }
             
         } catch(Exception e) {
             System.out.println("Illegal argument: " + e.getMessage());
             return;
         }
 
-        logger.info("argument are correct");
+        logger.info("Arguments are correct");
         Notifications clientNotifier;
         try {
             logger.info("Getting FlightTracerService");

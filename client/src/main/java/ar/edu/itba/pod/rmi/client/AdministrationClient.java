@@ -5,12 +5,10 @@ import ar.edu.itba.pod.rmi.AirportExceptions.LaneNotExistentException;
 import ar.edu.itba.pod.rmi.AirportExceptions.SameLaneStateException;
 import ar.edu.itba.pod.rmi.Categories;
 import ar.edu.itba.pod.rmi.Services.AirportOpsService;
-import ar.edu.itba.pod.rmi.client.ClientExceptions.WrongNumberOfArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.rmi.Naming;
-import java.rmi.RemoteException;
+import java.rmi.Naming;;
 import java.util.List;
 import java.util.Map;
 
@@ -37,26 +35,14 @@ public class AdministrationClient {
             );
 
             if(address == null || actionName == null) {
-                throw new IllegalArgumentException("address and out file must be specified");
-            }
-
-            if(System.getProperties().size() < LIM_L || System.getProperties().size() > LIM_R) {
-                throw new WrongNumberOfArgumentsException(LIM_L, LIM_R);
+                throw new IllegalArgumentException("Address and out file must be specified");
             }
 
             if(actionName.equals(ClientsActionNames.ADD)) {
                 if(runwayName == null || minimumCategory == null)
                     throw new IllegalArgumentException("add must specify runway and category");
-            } else {
-                if(minimumCategory != null)
-                    throw new IllegalArgumentException("action does not receive minimum category");
-                if(actionName.equals(ClientsActionNames.TAKE_OFF) ||
-                        actionName.equals(ClientsActionNames.REORDER)) {
-                    if(runwayName != null)
-                        throw new IllegalArgumentException("action does not receive runway");
-                }
             }
-        } catch (WrongNumberOfArgumentsException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return;
         }
@@ -79,7 +65,7 @@ public class AdministrationClient {
                         message = e.getMessage();
                     }
                     if( message == null ) {
-                        System.out.println("Runway " + runwayName + " is now " + (opsService.isOpen(runwayName) ? "open" : "closed"));
+                        System.out.println("Runway " + runwayName + " is " + (opsService.isOpen(runwayName) ? "open" : "closed"));
                     } else {
                         System.out.println(message);
                     }

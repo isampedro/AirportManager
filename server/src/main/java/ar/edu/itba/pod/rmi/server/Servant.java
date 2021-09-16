@@ -276,6 +276,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         finally {
             laneLock.readLock().unlock();
         }
+        logger.info(flights.toString());
         return flights;
     }
 
@@ -296,6 +297,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
             laneLock.readLock().unlock();
         }
 
+        logger.info(flights.toString());
         return flights;
     }
 
@@ -311,7 +313,7 @@ public class Servant implements AirportOpsService, LaneRequesterService, FlightT
         } finally {
             laneLock.readLock().unlock();
         }
-
+        logger.info(flightsTakeOff.toString());
         return flightsTakeOff;
     }
 
